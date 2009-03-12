@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+Ramune - Flash Video Conferencing
+
+Copyright © 2008 The Regents of the University of California
+All Rights Reserved
+
+Created by Hector Guillermo Parra, hector@hectorparra.com
+California Institute for Telecommunications and Information Technology
+University of California, Irvine
+
+Based on design by Jozsef Vass, Adobe Systems Incorporated
+
+-->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="horizontal"
+	width="100%"
+	height="100%"
+	preinitialize="onPreinitialize()"
+	initialize="onInitialize()"
+	creationComplete="onCreationComplete()"
+	applicationComplete="onApplicationComplete()" horizontalAlign="center" verticalAlign="middle">
+	
+	<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+	
+		private const SERVER_URI:String = "rtmfp://stratus.adobe.com/957c10737240a05c0143ce7f-b33403f49938";
+		private var netConnection:NetConnection;
+		private var listenerStream:NetStream;		// listens for incoming call
+		private var controlStream:NetStream;		// caller's incoming to callee's listener
+		private var outgoingStream:NetStream;
+		private var incomingStream:NetStream;
+		[Bindable] private var loginState:int;		// TODO: Reevaluate use
+		private const LOGIN_NOT_CONNECTED:int = 0;
+		private const LOGIN_CONNECTING:int = 1;
+		private const LOGIN_CONNECTED:int = 2;
+		private const LOGIN_DISCONNECTING:int = 3;
+		private var callState:String;
+		private const CALL_NOT_READY:String = "RamuneCallNotReady";
+		private const CALL_READY:String = "RamuneCallReady";
+		private const CALL_CALLING:String = "RamuneCallCalling";
+		private const CALL_RINGING:String = "RamuneCallRinging";
+		private const CALL_ESTABLISHED:String = "RamuneCallEstablished";
+		private const CALL_FAILED:String = "RamuneCallFailed";
+		private var cams:Array;
+		private var mics:Array;
+		private var default_cam_index:int;
+		private var default_mic_index:int;
+		private var remoteVideo:Video;
+		private var localVideo:Video;
+		private var remoteName:String;
+		
+		private function onPreinitialize():void {
+		}
+		private function onInitialize():void {		
+		}
+		private function onCreationComplete():void {
+			this.doubleClickEnabled = true;
+		 	this.verticalScrollPolicy = "off";
+			this.horizontalScrollPolicy = "off";
+		}
+		private function onApplicationComplete():void {
+			changeCallState(CALL_NOT_READY);
+			
+			debug("Player: " + Capabilities.version);
+
+			if (!ExternalInterface.available) {
+				debug("ExternalInterface not available!");
+				return;
+			}
+
+			// TODO: ignoreCall?
+			// TODO: cancelCall?
+			ExternalInterface.addCallback("placeCall", placeCall);
+			ExternalInterface.addCallback("acceptCall", acceptCall);
+			ExternalInterface.addCallback("endCall", endCall);
+			
+			loginState = LOGIN_NOT_CONNECTED;
+			
+			initializeCams();
+			initializeMics();
+			onConnect();
+        }
+        private function changeCallState(state:String):void {
+        	switch (state) {
+        		case CALL_NOT_READY:
+        		case CALL_READY:
+        		case CALL_CALLING:
+        		case CALL_RINGING:
+        		case CALL_ESTABLISHED:
+        		case CALL_FAILED:
+        			callState = state;
+        			debug("Stage Changed: " + state);
+        			ExternalInterface.call("ramunex.onCallStateChanged", state);
+        			break;
+        		default:
+        			// TODO: Unknown State Exception
+        			break;
+        	}
+        }
+        public function onConnect():void {
+        	netConnection = new NetConnection();
+        	netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnectionHandler);
+        	netConnection.connect(SERVER_URI);
+        }
+    	private function netConnectionHandler(event:NetStatusEvent):void
+		{
+			debug("NetConnection event: " + event.info.code);
+			
+        	switch (event.info.code)
+        	{
+            	case "NetConnection.Connect.Success":
+            		debug("Successfully connected to " + netConnection.uri);
+            		debug("NearID: " + netConnection.nearID);
+            		// CHANGED: Reporting nearID to Javascript
+            		// FIXME: Change name to reflect what is happening here
+            		ExternalInterface.call("ramunex.onNetConnectionSuccess", netConnection.nearID);
+            		onNetConnectSuccess();
+                	break;
+                	
+                case "NetConnection.Connect.Closed": // TODO: ramunex.onNetConnectionClosed
+                	loginState = LOGIN_NOT_CONNECTED;
+                	changeCallState(CALL_NOT_READY);
+                	break;
+                	
+                case "NetStream.Connect.Success":
+                	// we get this when other party connects to our control stream our outgoing stream
+                	debug("Connection from: " + event.info.stream.farID);
+                	break;
+                	
+                case "NetConnection.Connect.Failed":
+                	debug("Unable to connect to " + netConnection.uri);
+                	loginState = LOGIN_NOT_CONNECTED;
+                	break;
+                	
+                case "NetStream.Connect.Closed":
+					endCall();
+                	break;
+         	}
+     	}
+     	private function onNetConnectSuccess():void {
+			listenerStream = new NetStream(netConnection, NetStream.DIRECT_CONNECTIONS); // start the control stream that will listen to incoming calls
+			listenerStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
+				debug("listenerStream event: " + event.info.code);
+			});
+			listenerStream.publish("control" + "MY_USERNAME"); // FIXME: Name properly!
+
+			var c:Object = new Object();
+			c.onPeerConnect = function(caller:NetStream):Boolean {
+
+				debug("Caller connecting to listener stream. FarID: " + caller.farID);
+
+				if (callState == CALL_READY) {
+					changeCallState(CALL_RINGING);
+
+					incomingStream = new NetStream(netConnection, caller.farID); // callee subscribes to media, to be able to get the remote user name
+					incomingStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
+						debug("Incoming stream event: " + event.info.code);
+		            	switch (event.info.code) {
+		            		case "NetStream.Play.UnpublishNotify":
+		            			endCall();
+		            			break;
+		             	}
+					});
+					incomingStream.play("media-caller");
+					
+					// set volume for incoming stream
+					//var st:SoundTransform = new SoundTransform(speakerVolumeSlider.value);
+					//incomingStream.soundTransform = st;
+
+					incomingStream.receiveAudio(false);
+					incomingStream.receiveVideo(false);
+
+					var i:Object = new Object();
+					i.onIncomingCall = function(caller:String):void {
+						//Alert.show('Incoming CALL');
+						if (callState != CALL_RINGING) {
+							debug("onIncomingCall: Wrong call state: " + callState);
+						}
+						else {
+							remoteName = caller;
+							debug("Incoming call from: " + caller);	
+						}
+					}
+					
+					i.onIm = function(name:String, text:String):void {
+						// TODO: JavaScript IM responder
+					}
+					incomingStream.client = i;
+
+					return true;
+				}
+
+				debug("onPeerConnect: all rejected due to state: " + callState);
+				return false;
+			}
+						
+			listenerStream.client = c;						
+			changeCallState(CALL_READY); // NOT GETTING HERE!!!
+		}
+		private function placeCall(user:String, identity:String):void {
+			debug("Calling " + user + ", ID: " + identity);
+						
+			if (identity.length != 64) {
+				debug("Invalid remote ID, call failed");
+				changeCallState(CALL_FAILED);
+				return;
+			}
+						
+			// caller subsrcibes to callee's listener stream
+			controlStream = new NetStream(netConnection, identity);
+			controlStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
+				debug("Control event: " + event.info.code);
+			});
+			//controlStream.play("control" + user);
+			controlStream.play("control" + "MY_USERNAME"); // FIXME: Hack!
+
+			// caller publishes media stream
+			outgoingStream = new NetStream(netConnection, NetStream.DIRECT_CONNECTIONS);
+			outgoingStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
+				debug("Outgoing stream event: " + event.info.code);
+            	switch (event.info.code) {
+            		case "NetStream.Play.Start":
+            			if (callState == CALL_CALLING) {
+            				// FIX: Grab nearID/nearName from JS
+            				outgoingStream.send("onIncomingCall", "MY_USERNAME"); // FIXME
+            				//outgoingStream.send("onIncomingCall", userNameInput.text);
+            			}
+            			break;
+            	}
+			});
+			outgoingStream.publish("media-caller");
+						
+			var o:Object = new Object();
+			o.onPeerConnect = function(caller:NetStream):Boolean {
+				debug("Callee connecting to media stream: " + caller.farID);
+				return true;
+			}
+			outgoingStream.client = o;
+
+			localVideoDisplay.attachCamera(cams[default_cam_index]);
+			outgoingStream.attachCamera(cams[default_cam_index]);
+			outgoingStream.attachAudio(mics[default_mic_index]);
+													
+			// caller subscribes to callee's media stream
+			incomingStream = new NetStream(netConnection, identity);
+			incomingStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
+				debug("Incoming stream event: " + event.info.code);
+            	switch (event.info.code) {
+            		case "NetStream.Play.UnpublishNotify":
+            			endCall();
+            			break;
+             	}
+			});
+			incomingStream.play("media-callee");
+			
+			// set volume for incoming stream
+			//var st:SoundTransform = new SoundTransform(speakerVolumeSlider.value);
+			//incomingStream.soundTransform = st;
+						
+			var i:Object = new Object;
+			i.onCallAccepted = function(callee:String):void {
+				if (callState != CALL_CALLING) {
+					debug("onCallAccepted: Wrong call state: " + callState);
+					return;
+				}
+        		changeCallState(CALL_ESTABLISHED);
+				debug("Call accepted by " + callee);
+			}
+			i.onIm = function(name:String, text:String):void {
+				// TODO: Javascript IM
+			}
+			incomingStream.client = i;
+				
+			// TODO: Reintegrate Ramune UI
+			remoteVideo = new Video();
+			remoteVideo.width = 320;
+			remoteVideo.height = 240;
+			remoteVideo.attachNetStream(incomingStream);
+			remoteVideoDisplay.addChild(remoteVideo);
+						
+			//remoteName = user;
+			changeCallState(CALL_CALLING);
+		}
+		private function acceptCall():void {
+			// FIXME: it shouldn't do any of this unless it's on the right state
+			
+			incomingStream.receiveAudio(true);
+			incomingStream.receiveVideo(true);
+			
+			remoteVideo = new Video();
+			remoteVideo.width = 320;
+			remoteVideo.height = 240;
+			remoteVideo.attachNetStream(incomingStream);
+			remoteVideoDisplay.addChild(remoteVideo);
+							
+			// callee publishes media
+			outgoingStream = new NetStream(netConnection, NetStream.DIRECT_CONNECTIONS);
+			outgoingStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
+				debug("Outgoing stream event: " + event.info.code);
+            	switch (event.info.code)
+            	{
+            		case "NetStream.Play.Start":
+            			if (callState == CALL_CALLING) {
+            				outgoingStream.send("onIncomingCall", "MY_USERNAME"); // FIXME
+            			}
+            			break;
+            	}
+			});
+			outgoingStream.publish("media-callee");
+			
+			var o:Object = new Object
+			o.onPeerConnect = function(caller:	NetStream):Boolean {
+				debug("Caller connecting to media stream: " + caller.farID + "\n");
+				return true; 
+			}
+			outgoingStream.client = o;
+			
+			outgoingStream.send("onCallAccepted", "MY_USERNAME"); // FIXME
+			
+			localVideoDisplay.attachCamera(cams[default_cam_index]);
+			outgoingStream.attachCamera(cams[default_cam_index]);
+			outgoingStream.attachAudio(mics[default_mic_index]);
+								
+			changeCallState(CALL_ESTABLISHED);
+		}
+		private function endCall():void {
+			debug("Ending call");
+			
+			if (incomingStream) {
+				incomingStream.close();
+				//incomingStream.removeEventListener(NetStatusEvent.NET_STATUS, incomingStreamHandler);
+			}
+			
+			if (outgoingStream) {
+				outgoingStream.close();
+				//outgoingStream.removeEventListener(NetStatusEvent.NET_STATUS, outgoingStreamHandler);
+			}
+			
+			if (controlStream) {
+				controlStream.close();
+				//controlStream.removeEventListener(NetStatusEvent.NET_STATUS, controlHandler);
+			}
+			
+			incomingStream = null;
+			outgoingStream = null;
+			controlStream = null;
+			// TODO: Kill local camera
+			// TODO: Clear remote and local video
+			
+			
+			remoteName = "";
+			
+			changeCallState(CALL_READY);	
+		}
+/*******************/
+		public function initializeCams():void {
+			if (Camera.names.length > 0) {
+				cams = new Array();
+				for (var i:uint = 0; i < Camera.names.length; ++i) {
+					debug("Found Camera " + i + ": " + Camera.names[i]);
+					cams.push(Camera.getCamera(i.toString()));
+				}
+				default_cam_index = Camera.getCamera(null).index;
+			}
+			else {
+				default_cam_index = -1;
+				cams = null;
+				debug("No Cameras found!");
+			}
+		}
+        public function initializeMics():void {
+			if (Microphone.names.length > 0) {
+					mics = new Array();
+				for (var i:uint = 0; i < Microphone.names.length; ++i) {
+					debug("Found Microphone " + i + ": " + Microphone.names[i]);
+					mics.push(Microphone.getMicrophone(i));
+				}
+				default_mic_index = Microphone.getMicrophone(-1).index;
+			}
+			else {
+				default_mic_index = -1;
+				mics = null;
+				debug("No Microphones found!");
+			}
+		}
+		private function debug(msg:String):void {
+			trace(msg);
+			//ExternalInterface.call("debug", "[Ramune] " + msg);
+		}
+	]]>
+	</mx:Script>
+	<mx:VideoDisplay id="localVideoDisplay" width="320" height="240"/>
+	<mx:VideoDisplay id="remoteVideoDisplay" width="320" height="240" />
+</mx:Application>
+

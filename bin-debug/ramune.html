@@ -1,0 +1,127 @@
+<!--
+
+Copyright ¬© 2008 The Regents of the University of California
+All Rights Reserved
+
+Created by Hector Guillermo Parra, hector@hectorparra.com
+California Institute for Telecommunications and Information Technology
+University of California, Irvine
+
+-->
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Ramune Prototype</title>
+		<script type="text/javascript" src="javascripts/jquery-1.3.2.js" ></script>
+		<script type="text/javascript" src="javascripts/jquery.swfobject.js" ></script>
+		<style>
+		</style>
+		<script type="text/javascript">
+		// TODO: Extract as ramune.js
+		// TODO: Rename as jRamune?
+		var ramunex = {
+			states: {
+				CALL_NOT_READY: "RamuneCallNotReady",
+				CALL_READY: "RamuneCallReady",
+				CALL_CALLING: "RamuneCallCalling",
+				CALL_RINGING: "RamuneCallRinging",
+				CALL_ESTABLISHED: "RamuneCallEstablished",
+				CALL_FAILED: "RamuneCallFailed"
+			},
+			selector: null,
+			initialize: function(s) {
+				selector = s;
+				$(s).flash({
+					id: 'ramune',
+					swf: 'ramune.swf',
+					width: '100%',
+					height: '100%',
+					flashvars: {
+					},
+					flashparams: {
+						//wmode: "transparent, // FIXME: See http://twitter.com/hgparra/status/1309417926
+						allowscriptaccess: "always",
+						allowfullscreen: "true"	
+					}
+				});
+			},
+			/* placeCall */
+			placeCall: function(name, farID) {
+				ramune.placeCall(name, farID); // NOTE: Defined by ExternalInterface
+			},
+			acceptCall: function() {
+				ramune.acceptCall(); // NOTE: Defined by ExternalInterface
+			},
+			endCall: function() {
+				ramune.endCall(); // NOTE: Defined by ExternalInterface
+			},
+			/* onNearIDAssigned */
+			onNetConnectionSuccess: function(farID) {
+				event = jQuery.Event("NetConnectionSuccessfulEvent");
+				event.farID = farID;
+				$(selector).trigger(event);
+			},
+			/* onCallStateChanged */
+			onCallStateChanged: function(state) {
+				event = jQuery.Event("StateChangedEvent");
+				event.state = state;
+				$(selector).trigger(event);
+			}
+		}
+		
+		function placeCall() {
+			key = prompt("FarID?", "");
+			if(key) 
+				ramunex.placeCall('test', key);
+		}
+		
+		// TODO: Integrate into frescolita
+		$(document).ready(function() {
+			
+			// hide all states
+			for (i in ramunex.states)
+				$('#' + ramunex.states[i]).hide();
+			
+			$("#ramunex").bind("NetConnectionSuccessfulEvent", function(e) {
+				$("#nearID").html(e.farID);
+			});
+			
+			$("#ramunex").bind("StateChangedEvent", function(e) {
+				$("#currentState").html(e.state);
+				
+				for (i in ramunex.states)
+					$('#' + ramunex.states[i]).hide();
+
+				$("#" + e.state).show();
+			});
+			
+			ramunex.initialize("#ramunex");
+		});
+		</script>
+	</head>
+
+	<body scroll="no"><!-- TODO: Research this tag option. Valid HTML? -->
+		<div>Current State: <span id="currentState"></span></div>
+		<div>Your NearID: <span id="nearID"></span></div>
+		<!-- STATES -->
+		<div id="RamuneCallNotReady">
+			Not Ready
+		</div>
+		<div id="RamuneCallReady">
+			<a href="#" onclick="placeCall()">Place Call</a>
+		</div>
+		<div id="RamuneCallCalling">
+			TODO: Cancel Call
+		</div>
+		<div id="RamuneCallRinging">
+			<a href="#" onclick="ramunex.acceptCall()">Accept Call?</a>
+		</div>
+		<div id="RamuneCallEstablished">
+			<a href="#" onclick="ramunex.endCall()">Hang Up</a>
+		</div>
+		<div id="RamuneCallFailed">
+		</div>
+		
+		<div id="ramunex"></div>
+	</body>
+</html>

@@ -1,0 +1,11 @@
+#!/usr/bin/ruby
+require 'webrick'
+include WEBrick
+
+server = HTTPServer.new(
+  :Port            => 4000,
+  :DocumentRoot    => Dir::pwd + "/bin-debug"
+)
+
+trap("INT"){ s.shutdown }
+server.start
