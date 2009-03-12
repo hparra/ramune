@@ -7,5 +7,5 @@ server = HTTPServer.new(
   :DocumentRoot    => Dir::pwd + "/bin-debug"
 )
 
-trap("INT"){ s.shutdown }
+trap("INT"){ server.shutdown }
 server.start
