@@ -362,6 +362,9 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				for (var i:uint = 0; i < Camera.names.length; ++i) {
 					debug("Found Camera " + i + ": " + Camera.names[i]);
 					cams.push(Camera.getCamera(i.toString()));
+					cams[i].setQuality(0, 80);
+					cams[i].setMode(720, 480, 25);
+					cams[i].setKeyFrameInterval(25);
 				}
 				default_cam_index = Camera.getCamera(null).index;
 			}
@@ -377,6 +380,12 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				for (var i:uint = 0; i < Microphone.names.length; ++i) {
 					debug("Found Microphone " + i + ": " + Microphone.names[i]);
 					mics.push(Microphone.getMicrophone(i));
+					mics[i].codec = SoundCodec.SPEEX;
+					mics[i].rate = 11; // Microphone default
+					mics[i].framesPerPacket = 2; // Microphone default
+					mics[i].encodeQuality = 6; // Microphone default [0, 10]
+					mics[i].setSilenceLevel(0); // NOTE: needed due to stange bug
+					//mics[i].setEchoSuppression(false);
 				}
 				default_mic_index = Microphone.getMicrophone(-1).index;
 			}
@@ -392,7 +401,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		}
 	]]>
 	</mx:Script>
-	<mx:VideoDisplay id="localVideoDisplay" width="320" height="240"/>
-	<mx:VideoDisplay id="remoteVideoDisplay" width="320" height="240" />
+	<mx:VideoDisplay id="localVideoDisplay" width="720" height="480"/>
+	<mx:VideoDisplay id="remoteVideoDisplay" width="720" height="480" />
 </mx:Application>
 
