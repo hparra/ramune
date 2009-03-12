@@ -22,7 +22,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 	initialize="onInitialize()"
 	creationComplete="onCreationComplete()"
 	applicationComplete="onApplicationComplete()"
-	doubleClick="onDoubleClick()" backgroundColor="#000000">
+	doubleClick="onDoubleClick()"
+	backgroundColor="#000000">
 	
 	<mx:Script>
 	<![CDATA[
@@ -88,8 +89,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			
 			initializeCams();
 			initializeMics();
-			// FIXME: initially this should have no size
-			setSize(1440, 480);
+			setSize(0, 0);
 			onConnect();
         }
         private function changeCallState(state:String):void {
@@ -101,8 +101,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
         		case CALL_ESTABLISHED:
         		case CALL_FAILED:
         			callState = state;
-        			debug("Stage Changed: " + state);
-        			ExternalInterface.call("ramunex.onCallStateChanged", state);
+        			debug("State Changed: " + state);
+        			ExternalInterface.call("jRamune.onCallStateChanged", state);
         			break;
         		default:
         			// TODO: Unknown State Exception
@@ -125,11 +125,11 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
             		debug("NearID: " + netConnection.nearID);
             		// CHANGED: Reporting nearID to Javascript
             		// FIXME: Change name to reflect what is happening here
-            		ExternalInterface.call("ramunex.onNetConnectionSuccess", netConnection.nearID);
+            		ExternalInterface.call("jRamune.onNetConnectionSuccess", netConnection.nearID);
             		onNetConnectSuccess();
                 	break;
                 	
-                case "NetConnection.Connect.Closed": // TODO: ramunex.onNetConnectionClosed
+                case "NetConnection.Connect.Closed": // TODO: jRamune.onNetConnectionClosed
                 	loginState = LOGIN_NOT_CONNECTED;
                 	changeCallState(CALL_NOT_READY);
                 	break;
@@ -249,6 +249,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			}
 			outgoingStream.client = o;
 
+			setSize(1440, 480);
 			if (localVideoIndex < 0)
 				localVideoIndex = ui.newVideo(720, 480, 0, 0, 0);
 			ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
@@ -293,13 +294,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				remoteVideoIndex = ui.newVideo(720, 480, 720, 0, 0);
 			ui.attachNetStreamToVideo(incomingStream, remoteVideoIndex);
 			ui.resizeVideo(remoteVideoIndex, 720, 480);
-			/*
-			remoteVideo = new Video();
-			remoteVideo.width = 320;
-			remoteVideo.height = 240;
-			remoteVideo.attachNetStream(incomingStream);
-			remoteVideoDisplay.addChild(remoteVideo);
-			*/			
+		
 			//remoteName = user;
 			changeCallState(CALL_CALLING);
 		}
@@ -309,17 +304,12 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			incomingStream.receiveAudio(true);
 			incomingStream.receiveVideo(true);
 			
+			setSize(1440, 480);
 			if (remoteVideoIndex < 0)
 				remoteVideoIndex = ui.newVideo(720, 480, 720, 0, 0);
 			ui.attachNetStreamToVideo(incomingStream, remoteVideoIndex);
 			ui.resizeVideo(remoteVideoIndex, 720, 480);
-			/*
-			remoteVideo = new Video();
-			remoteVideo.width = 320;
-			remoteVideo.height = 240;
-			remoteVideo.attachNetStream(incomingStream);
-			remoteVideoDisplay.addChild(remoteVideo);
-			*/
+
 			// callee publishes media
 			outgoingStream = new NetStream(netConnection, NetStream.DIRECT_CONNECTIONS);
 			outgoingStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
@@ -432,7 +422,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			this.height = height;
 			
 			// should probably dispatch event instead
-			ExternalInterface.call("ramunex.onResize", this.width, this.height);
+			ExternalInterface.call("jRamune.onResize", this.width, this.height);
 		}
 		private function debug(msg:String):void {
 			trace(msg);

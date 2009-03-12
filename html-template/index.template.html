@@ -14,102 +14,46 @@ University of California, Irvine
 		<title>Ramune Prototype</title>
 		<script type="text/javascript" src="javascripts/jquery-1.3.2.js" ></script>
 		<script type="text/javascript" src="javascripts/jquery.swfobject.js" ></script>
+		<script type="text/javascript" src="javascripts/jRamune.js" ></script>
 		<style>
 		</style>
 		<script type="text/javascript">
-		// TODO: Extract as ramune.js
-		// TODO: Rename as jRamune?
-		var ramunex = {
-			states: {
-				CALL_NOT_READY: "RamuneCallNotReady",
-				CALL_READY: "RamuneCallReady",
-				CALL_CALLING: "RamuneCallCalling",
-				CALL_RINGING: "RamuneCallRinging",
-				CALL_ESTABLISHED: "RamuneCallEstablished",
-				CALL_FAILED: "RamuneCallFailed"
-			},
-			events: {
-				RESIZE: "RamuneResizeEvent",
-				STATE_CHANGED: "RamuneStateChangedEvent",
-				NETCONNECTION_SUCCESSFUL: "RamuneNetConnectionSuccessful"
-			},
-			selector: null,
-			initialize: function(s) {
-				selector = s;
-				$(s).flash({
-					id: 'ramune',
-					swf: 'ramune.swf',
-					width: '0',
-					height: '0',
-					params: {
-						//wmode: "transparent, // FIXME: See http://twitter.com/hgparra/status/1309417926
-						allowscriptaccess: "always",
-						allowfullscreen: "true"	
-					},
-					flashvars: {
-					}
-				});
-			},
-			placeCall: function(name, farID) {
-				ramune.placeCall(name, farID); // NOTE: Defined by ExternalInterface
-			},
-			acceptCall: function() {
-				ramune.acceptCall(); // NOTE: Defined by ExternalInterface
-			},
-			endCall: function() {
-				ramune.endCall(); // NOTE: Defined by ExternalInterface
-			},
-			onNetConnectionSuccess: function(farID) {
-				event = jQuery.Event(ramunex.events.NETCONNECTION_SUCCESSFUL);
-				event.farID = farID;
-				$(selector).trigger(event);
-			},
-			onCallStateChanged: function(state) {
-				event = jQuery.Event(ramunex.events.STATE_CHANGED);
-				event.state = state;
-				$(selector).trigger(event);
-			},
-			onResize: function(width, height) {
-				event = jQuery.Event(ramunex.events.RESIZE); // FIXME: this?
-				event.width = width;
-				event.height = height;
-				$(selector).trigger(event);
-			}
-		}
+		// CHANGED: Renamed as jRamune
+		// CHANGED: Extract as jRamune.js
 		
 		function placeCall() {
 			key = prompt("FarID?", "");
 			if(key) 
-				ramunex.placeCall('test', key);
+				jRamune.placeCall('test', key);
 		}
 		
 		// TODO: Integrate into frescolita
 		$(document).ready(function() {
 			
 			// hide all states
-			for (i in ramunex.states)
-				$('#' + ramunex.states[i]).hide();
+			for (i in jRamune.states)
+				$('#' + jRamune.states[i]).hide();
 			
-			$("#ramunex").bind(ramunex.events.NETCONNECTION_SUCCESSFUL, function(e) {
+			$("#ramunex").bind(jRamune.events.NETCONNECTION_SUCCESSFUL, function(e) {
 				$("#nearID").html(e.farID);
 			});
 			
-			$("#ramunex").bind(ramunex.events.STATE_CHANGED, function(e) {
+			$("#ramunex").bind(jRamune.events.STATE_CHANGED, function(e) {
 				$("#currentState").html(e.state);
 				
-				for (i in ramunex.states)
-					$('#' + ramunex.states[i]).hide();
+				for (i in jRamune.states)
+					$('#' + jRamune.states[i]).hide();
 
 				$("#" + e.state).show();
 			});
 			
-			$("#ramunex").bind(ramunex.events.RESIZE, function(e) {
+			$("#ramunex").bind(jRamune.events.RESIZE, function(e) {
 				// FIXME: we never want people to access div#ramune directly
 				$("#ramune").css("width", e.width);
 				$("#ramune").css("height", e.height);
 			});
 			
-			ramunex.initialize("#ramunex");
+			jRamune.initialize("#ramunex");
 		});
 		</script>
 	</head>
@@ -128,11 +72,11 @@ University of California, Irvine
 			TODO: Cancel Call
 		</div>
 		<div id="RamuneCallRinging">
-			<a href="#" onclick="ramunex.acceptCall()">Accept Call?</a>
-			<a href="#" onclick="ramunex.ignoreCall()">Ignore Call?</a>
+			<a href="#" onclick="jRamune.acceptCall()">Accept Call?</a>
+			<a href="#" onclick="jRamune.ignoreCall()">Ignore Call?</a>
 		</div>
 		<div id="RamuneCallEstablished">
-			<a href="#" onclick="ramunex.endCall()">Hang Up</a>
+			<a href="#" onclick="jRamune.endCall()">Hang Up</a>
 		</div>
 		<div id="RamuneCallFailed">
 		</div>
