@@ -14,13 +14,15 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 
 -->
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
-	layout="horizontal"
-	width="100%"
-	height="100%"
+	xmlns:ramune="ramune.*"
+	layout="absolute"
+	width="0"
+	height="0"
 	preinitialize="onPreinitialize()"
 	initialize="onInitialize()"
 	creationComplete="onCreationComplete()"
-	applicationComplete="onApplicationComplete()" horizontalAlign="center" verticalAlign="middle">
+	applicationComplete="onApplicationComplete()"
+	doubleClick="onDoubleClick()" backgroundColor="#000000">
 	
 	<mx:Script>
 	<![CDATA[
@@ -48,9 +50,14 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		private var mics:Array;
 		private var default_cam_index:int;
 		private var default_mic_index:int;
-		private var remoteVideo:Video;
-		private var localVideo:Video;
 		private var remoteName:String;
+		
+
+		private var remoteVideoIndex:int = -1;
+		private var localVideoIndex:int = -1;
+
+		//private var remoteVideo:Video;
+		//private var localVideo:Video;
 		
 		private function onPreinitialize():void {
 		}
@@ -81,6 +88,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			
 			initializeCams();
 			initializeMics();
+			// FIXME: initially this should have no size
+			setSize(1440, 480);
 			onConnect();
         }
         private function changeCallState(state:String):void {
@@ -240,7 +249,12 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			}
 			outgoingStream.client = o;
 
-			localVideoDisplay.attachCamera(cams[default_cam_index]);
+			if (localVideoIndex < 0)
+				localVideoIndex = ui.newVideo(720, 480, 0, 0, 0);
+			ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
+			ui.resizeVideo(localVideoIndex, 720, 480);
+			//localVideoDisplay.attachCamera();
+			
 			outgoingStream.attachCamera(cams[default_cam_index]);
 			outgoingStream.attachAudio(mics[default_mic_index]);
 													
@@ -274,13 +288,18 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			}
 			incomingStream.client = i;
 				
-			// TODO: Reintegrate Ramune UI
+			// CHANGED: Reintegrate Ramune UI
+			if (remoteVideoIndex < 0)
+				remoteVideoIndex = ui.newVideo(720, 480, 720, 0, 0);
+			ui.attachNetStreamToVideo(incomingStream, remoteVideoIndex);
+			ui.resizeVideo(remoteVideoIndex, 720, 480);
+			/*
 			remoteVideo = new Video();
 			remoteVideo.width = 320;
 			remoteVideo.height = 240;
 			remoteVideo.attachNetStream(incomingStream);
 			remoteVideoDisplay.addChild(remoteVideo);
-						
+			*/			
 			//remoteName = user;
 			changeCallState(CALL_CALLING);
 		}
@@ -290,12 +309,17 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			incomingStream.receiveAudio(true);
 			incomingStream.receiveVideo(true);
 			
+			if (remoteVideoIndex < 0)
+				remoteVideoIndex = ui.newVideo(720, 480, 720, 0, 0);
+			ui.attachNetStreamToVideo(incomingStream, remoteVideoIndex);
+			ui.resizeVideo(remoteVideoIndex, 720, 480);
+			/*
 			remoteVideo = new Video();
 			remoteVideo.width = 320;
 			remoteVideo.height = 240;
 			remoteVideo.attachNetStream(incomingStream);
 			remoteVideoDisplay.addChild(remoteVideo);
-							
+			*/
 			// callee publishes media
 			outgoingStream = new NetStream(netConnection, NetStream.DIRECT_CONNECTIONS);
 			outgoingStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
@@ -320,7 +344,11 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			
 			outgoingStream.send("onCallAccepted", "MY_USERNAME"); // FIXME
 			
-			localVideoDisplay.attachCamera(cams[default_cam_index]);
+			if (localVideoIndex < 0)
+				localVideoIndex = ui.newVideo(720, 480, 0, 0, 0);
+			ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
+			ui.resizeVideo(localVideoIndex, 720, 480);
+			//localVideoDisplay.attachCamera(cams[default_cam_index]);
 			outgoingStream.attachCamera(cams[default_cam_index]);
 			outgoingStream.attachAudio(mics[default_mic_index]);
 								
@@ -354,6 +382,10 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			remoteName = "";
 			
 			changeCallState(CALL_READY);	
+		}
+		// TODO: Implement ignoreCall()
+		private function ignoreCall():void {
+			
 		}
 /*******************/
 		public function initializeCams():void {
@@ -395,13 +427,40 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				debug("No Microphones found!");
 			}
 		}
+		public function setSize(width:Number, height:Number):void {	
+			this.width = width;
+			this.height = height;
+			
+			// should probably dispatch event instead
+			ExternalInterface.call("ramunex.onResize", this.width, this.height);
+		}
 		private function debug(msg:String):void {
 			trace(msg);
 			//ExternalInterface.call("debug", "[Ramune] " + msg);
 		}
+		private function onDoubleClick():void {
+			// TODO: abstract as setFullScreen()
+			try {
+				if (systemManager.stage.displayState == StageDisplayState.NORMAL) {
+					var prevWidth:Number = ui.width;
+					var prevHeight:Number = ui.height;
+					//==var prevWidth:Number = cam.width;
+					//var prevHeight:Number = cam.height;					
+					var videoPoint : Point = this.localToGlobal( new Point(ui.x, ui.y) );
+					
+					stage.fullScreenSourceRect = new Rectangle( videoPoint.x, videoPoint.y, prevWidth, prevHeight );
+		    		stage.displayState = StageDisplayState.FULL_SCREEN;
+				}
+				else {
+					stage.displayState = StageDisplayState.NORMAL;
+				}
+			}
+			catch (err:SecurityError) {
+				debug("Caught SecurityError!");
+			}
+		}
 	]]>
 	</mx:Script>
-	<mx:VideoDisplay id="localVideoDisplay" width="720" height="480"/>
-	<mx:VideoDisplay id="remoteVideoDisplay" width="720" height="480" />
+	<ramune:RamuneUI id="ui" width="100%" height="100%"/>
 </mx:Application>
 

@@ -28,24 +28,28 @@ University of California, Irvine
 				CALL_ESTABLISHED: "RamuneCallEstablished",
 				CALL_FAILED: "RamuneCallFailed"
 			},
+			events: {
+				RESIZE: "RamuneResizeEvent",
+				STATE_CHANGED: "RamuneStateChangedEvent",
+				NETCONNECTION_SUCCESSFUL: "RamuneNetConnectionSuccessful"
+			},
 			selector: null,
 			initialize: function(s) {
 				selector = s;
 				$(s).flash({
 					id: 'ramune',
 					swf: 'ramune.swf',
-					width: '100%',
-					height: '100%',
-					flashvars: {
-					},
-					flashparams: {
+					width: '0',
+					height: '0',
+					params: {
 						//wmode: "transparent, // FIXME: See http://twitter.com/hgparra/status/1309417926
 						allowscriptaccess: "always",
 						allowfullscreen: "true"	
+					},
+					flashvars: {
 					}
 				});
 			},
-			/* placeCall */
 			placeCall: function(name, farID) {
 				ramune.placeCall(name, farID); // NOTE: Defined by ExternalInterface
 			},
@@ -55,16 +59,20 @@ University of California, Irvine
 			endCall: function() {
 				ramune.endCall(); // NOTE: Defined by ExternalInterface
 			},
-			/* onNearIDAssigned */
 			onNetConnectionSuccess: function(farID) {
-				event = jQuery.Event("NetConnectionSuccessfulEvent");
+				event = jQuery.Event(ramunex.events.NETCONNECTION_SUCCESSFUL);
 				event.farID = farID;
 				$(selector).trigger(event);
 			},
-			/* onCallStateChanged */
 			onCallStateChanged: function(state) {
-				event = jQuery.Event("StateChangedEvent");
+				event = jQuery.Event(ramunex.events.STATE_CHANGED);
 				event.state = state;
+				$(selector).trigger(event);
+			},
+			onResize: function(width, height) {
+				event = jQuery.Event(ramunex.events.RESIZE); // FIXME: this?
+				event.width = width;
+				event.height = height;
 				$(selector).trigger(event);
 			}
 		}
@@ -82,17 +90,23 @@ University of California, Irvine
 			for (i in ramunex.states)
 				$('#' + ramunex.states[i]).hide();
 			
-			$("#ramunex").bind("NetConnectionSuccessfulEvent", function(e) {
+			$("#ramunex").bind(ramunex.events.NETCONNECTION_SUCCESSFUL, function(e) {
 				$("#nearID").html(e.farID);
 			});
 			
-			$("#ramunex").bind("StateChangedEvent", function(e) {
+			$("#ramunex").bind(ramunex.events.STATE_CHANGED, function(e) {
 				$("#currentState").html(e.state);
 				
 				for (i in ramunex.states)
 					$('#' + ramunex.states[i]).hide();
 
 				$("#" + e.state).show();
+			});
+			
+			$("#ramunex").bind(ramunex.events.RESIZE, function(e) {
+				// FIXME: we never want people to access div#ramune directly
+				$("#ramune").css("width", e.width);
+				$("#ramune").css("height", e.height);
 			});
 			
 			ramunex.initialize("#ramunex");
