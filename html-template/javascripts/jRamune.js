@@ -18,11 +18,11 @@ var jRamune = {
 		NETCONNECTION_SUCCESSFUL: "RamuneNetConnectionSuccessful"
 	},
 	selector: null,
-	initialize: function(s) {
-		selector = s;
+	initialize: function(s, path, vars) {
+		selector = s; // FIXME: Am I doing this right?
 		$(s).flash({
 			id: 'ramune',
-			swf: 'ramune.swf',
+			swf: path + 'ramune.swf',
 			width: '0',
 			height: '0',
 			params: {
@@ -30,8 +30,7 @@ var jRamune = {
 				allowscriptaccess: "always",
 				allowfullscreen: "true"	
 			},
-			flashvars: {
-			}
+			flashvars: vars
 		});
 	},
 	placeCall: function(name, farID) {
