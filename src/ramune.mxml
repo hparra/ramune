@@ -25,6 +25,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 	doubleClick="onDoubleClick()"
 	backgroundColor="#000000">
 	
+	<fab:FABridge xmlns:fab="bridge.*" />
+	
 	<mx:Script>
 	<![CDATA[
 		import mx.controls.Alert;
@@ -60,6 +62,17 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		//private var remoteVideo:Video;
 		//private var localVideo:Video;
 		
+		/*
+		 * Uber Methods
+		 */
+		public function getRemoteSharedObject(name:String, localPath:String, secure:Boolean = false):SharedObject {
+			return SharedObject.getRemote(name, localPath, secure);
+		}
+		public function newNetConnection():NetConnection {
+			return new NetConnection();
+		}
+
+		
 		private function onPreinitialize():void {
 		}
 		private function onInitialize():void {		
@@ -79,11 +92,14 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				return;
 			}
 
+
+			// NOT NECESSARY IF USING FABridge
 			// TODO: ignoreCall?
 			// TODO: cancelCall?
-			ExternalInterface.addCallback("placeCall", placeCall);
-			ExternalInterface.addCallback("acceptCall", acceptCall);
-			ExternalInterface.addCallback("endCall", endCall);
+			// TODO: These have a tendency not to work!
+			//ExternalInterface.addCallback("placeCall", placeCall);
+			//ExternalInterface.addCallback("acceptCall", acceptCall);
+			//ExternalInterface.addCallback("endCall", endCall);
 			
 			loginState = LOGIN_NOT_CONNECTED;
 			
@@ -209,7 +225,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			listenerStream.client = c;						
 			changeCallState(CALL_READY); // NOT GETTING HERE!!!
 		}
-		private function placeCall(user:String, identity:String):void {
+		public function placeCall(user:String, identity:String):void {
 			debug("Calling " + user + ", ID: " + identity);
 						
 			if (identity.length != 64) {
@@ -298,7 +314,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			//remoteName = user;
 			changeCallState(CALL_CALLING);
 		}
-		private function acceptCall():void {
+		public function acceptCall():void {
 			// FIXME: it shouldn't do any of this unless it's on the right state
 			
 			incomingStream.receiveAudio(true);
@@ -344,7 +360,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 								
 			changeCallState(CALL_ESTABLISHED);
 		}
-		private function endCall():void {
+		public function endCall():void {
 			debug("Ending call");
 			
 			if (incomingStream) {

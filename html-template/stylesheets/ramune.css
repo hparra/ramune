@@ -1,0 +1,229 @@
+/* CSS file */
+
+body {
+	font-family: Arial;
+	color: white;
+	background-color: black;
+	
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	height: 100%;
+	background-image: url('../images/beach.jpg'); // FIXME: Set background-image through JS;
+}
+
+
+
+#buddies{
+	width: 100%;
+	height: 75%;
+}
+.friend{
+	display: block;
+	float: left;
+	margin-left: 40px;
+	margin-top: 40px;
+	
+	padding: 15px;
+}
+
+.friend_photo{
+	border: solid 2px #aaaaaa;
+	
+	height: 200px; /* VAR */
+	width: 200px; /* VAR */
+}
+
+.friend_photo img{
+	width: 100%;
+	height: 100%;
+}
+
+.friend_name{
+	color: white;
+	font-family: arial;
+	text-align: center;
+	
+	position: relative;
+	margin-bottom: -10px;
+	padding: 5px;
+	
+	font-size: 12px; /* VAR */
+}
+
+#buddy_list_cancel_button{
+	display: block;
+	background-color: red;
+	
+	color: white;
+	font-family: arial;
+	text-align: center;
+	
+	font-size: 32px; /* VAR */
+	padding: 8px; /* VAR */
+}
+
+#cancel_location{
+	display: block;
+	float: right;
+	
+	margin-top: 30px;
+	margin-right: 30px;
+}
+
+/* CALLING OUTGOING STATE */
+#calling_outgoing{
+	position: absolute;
+}
+
+#calling_outgoing_text{
+	color: white;
+	font-family: arial;
+	text-align: center;
+	padding: 5px;
+	
+	font-size: 24px; /* VAR */
+}
+
+.friend_photo_calling_outgoing{
+	border: solid 2px #aaaaaa;
+	
+	height: 200px; /* VAR */
+	width: 200px; /* VAR */
+}
+
+.friend_photo_calling_outgoing img{
+	height: 100%;
+	width: 100%;
+}
+
+.friend_name_calling_outgoing{
+	color: white;
+	font-family: arial;
+	text-align: center;
+	padding: 5px;
+	
+	font-size: 16px; /* VAR */
+}
+
+#calling_outgoing_cancel_button{
+	background-color: red;
+	color: white;
+	font-family: arial;
+	text-align: center;
+	
+	font-size: 32px; /* VAR */
+	padding: 8px; /* VAR */
+}
+
+/* CALLING INCOMING STATE*/
+#calling_incoming{
+	position: absolute;
+	margin: auto auto auto auto;
+}
+
+#calling_incoming_text{
+	color: white;
+	font-family: arial;
+	text-align: center;
+	padding: 5px;
+	
+	font-size: 24px; /* VAR */
+}
+
+.friend_photo_calling_incoming{
+	border: solid 2px #aaaaaa;
+	
+	height: 200px; /* VAR */
+	width: 200px; /* VAR */
+}
+
+.friend_photo_calling_incoming img{
+	height: 100%;
+	width: 100%;
+}
+
+.friend_name_calling_incoming{
+	color: white;
+	font-family: arial;
+	text-align: center;
+	padding: 5px;
+	
+	font-size: 16px; /* VAR */
+}
+
+#calling_incoming_cancel_button{
+	background-color: red;
+	color: white;
+	font-family: arial;
+	text-align: center;
+	
+	display: block;
+	float: left;
+	width: 45%;
+	
+	position: absolute;
+	left: 50%;
+	
+	font-size: 32px; /* VAR */
+	padding: 8px; /* VAR */
+}
+
+#calling_incoming_accept_button{
+	background-color: green;
+	color: white;
+	font-family: arial;
+	text-align: center;
+	
+	display: block;
+	float: left;
+	width: 45%;
+	
+	font-size: 32px; /* VAR */
+	padding: 8px; /* VAR */
+}
+
+/* CALLING BUSY STATE */
+#calling_busy{
+	position: absolute;
+	margin: auto auto auto auto;
+}
+
+#calling_busy_text{
+	color: white;
+	font-family: arial;
+	text-align: center;
+	padding: 5px;
+	
+	font-size: 24px; /* VAR */
+}
+
+.friend_photo_calling_busy{
+	border: solid 2px #aaaaaa;
+	
+	height: 200px; /* VAR */
+	width: 200px; /* VAR */
+}
+
+.friend_photo_calling_busy img{
+	height: 100%;
+	width: 100%;
+}
+
+.friend_name_calling_busy{
+	color: white;
+	font-family: arial;
+	text-align: center;
+	padding: 5px;
+	
+	font-size: 16px; /* VAR */
+}
+
+#error_message_calling_busy{
+	color: white;
+	font-family: arial;
+	text-align: center;
+	width: 200px;
+	
+	font-size: 16px; /* VAR */
+}
