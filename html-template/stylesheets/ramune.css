@@ -12,7 +12,10 @@ body {
 	background-image: url('../images/beach.jpg'); // FIXME: Set background-image through JS;
 }
 
-
+h1 {
+	margin: 40px;
+	font-size: 40px;
+}
 
 #buddies{
 	width: 100%;

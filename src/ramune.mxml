@@ -4,7 +4,7 @@
 Ramune - Flash Video Conferencing
 
 Copyright © 2008 The Regents of the University of California
-All Rights Reserved
+All Rights Reserved 	
 
 Created by Hector Guillermo Parra, hector@hectorparra.com
 California Institute for Telecommunications and Information Technology
@@ -65,8 +65,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		/*
 		 * Uber Methods
 		 */
-		public function getRemoteSharedObject(name:String, localPath:String, secure:Boolean = false):SharedObject {
-			return SharedObject.getRemote(name, localPath, secure);
+		public function getRemoteSharedObject(name:String, localPath:String, persistence:Object = false, secure:Boolean = false):SharedObject {
+			return SharedObject.getRemote(name, localPath, persistence, secure);
 		}
 		public function newNetConnection():NetConnection {
 			return new NetConnection();
@@ -92,10 +92,6 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				return;
 			}
 
-
-			// NOT NECESSARY IF USING FABridge
-			// TODO: ignoreCall?
-			// TODO: cancelCall?
 			// TODO: These have a tendency not to work!
 			//ExternalInterface.addCallback("placeCall", placeCall);
 			//ExternalInterface.addCallback("acceptCall", acceptCall);
@@ -106,7 +102,6 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			initializeCams();
 			initializeMics();
 			setSize(0, 0);
-			onConnect();
         }
         private function changeCallState(state:String):void {
         	switch (state) {
@@ -125,7 +120,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
         			break;
         	}
         }
-        public function onConnect():void {
+        public function connect():void {
         	netConnection = new NetConnection();
         	netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnectionHandler);
         	netConnection.connect(SERVER_URI);
@@ -165,6 +160,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
                 	break;
          	}
      	}
+     	
+
      	private function onNetConnectSuccess():void {
 			listenerStream = new NetStream(netConnection, NetStream.DIRECT_CONNECTIONS); // start the control stream that will listen to incoming calls
 			listenerStream.addEventListener(NetStatusEvent.NET_STATUS, function(event:NetStatusEvent):void {
@@ -174,9 +171,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 
 			var c:Object = new Object();
 			c.onPeerConnect = function(caller:NetStream):Boolean {
-
 				debug("Caller connecting to listener stream. FarID: " + caller.farID);
-
 				if (callState == CALL_READY) {
 					changeCallState(CALL_RINGING);
 
@@ -200,7 +195,6 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 
 					var i:Object = new Object();
 					i.onIncomingCall = function(caller:String):void {
-						//Alert.show('Incoming CALL');
 						if (callState != CALL_RINGING) {
 							debug("onIncomingCall: Wrong call state: " + callState);
 						}
@@ -223,8 +217,9 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			}
 						
 			listenerStream.client = c;						
-			changeCallState(CALL_READY); // NOT GETTING HERE!!!
+			changeCallState(CALL_READY);
 		}
+		
 		public function placeCall(user:String, identity:String):void {
 			debug("Calling " + user + ", ID: " + identity);
 						
@@ -264,16 +259,6 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				return true;
 			}
 			outgoingStream.client = o;
-
-			setSize(1440, 480);
-			if (localVideoIndex < 0)
-				localVideoIndex = ui.newVideo(720, 480, 0, 0, 0);
-			ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
-			ui.resizeVideo(localVideoIndex, 720, 480);
-			//localVideoDisplay.attachCamera();
-			
-			outgoingStream.attachCamera(cams[default_cam_index]);
-			outgoingStream.attachAudio(mics[default_mic_index]);
 													
 			// caller subscribes to callee's media stream
 			incomingStream = new NetStream(netConnection, identity);
@@ -299,20 +284,33 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				}
         		changeCallState(CALL_ESTABLISHED);
 				debug("Call accepted by " + callee);
+
+				setSize(720, 480);
+				setLocalVideo();
+				outgoingStream.attachCamera(cams[default_cam_index]);
+				outgoingStream.attachAudio(mics[default_mic_index]);
 			}
 			i.onIm = function(name:String, text:String):void {
 				// TODO: Javascript IM
 			}
 			incomingStream.client = i;
-				
-			// CHANGED: Reintegrate Ramune UI
-			if (remoteVideoIndex < 0)
-				remoteVideoIndex = ui.newVideo(720, 480, 720, 0, 0);
-			ui.attachNetStreamToVideo(incomingStream, remoteVideoIndex);
-			ui.resizeVideo(remoteVideoIndex, 720, 480);
+			
+			setRemoteVideo();
 		
 			//remoteName = user;
 			changeCallState(CALL_CALLING);
+		}
+		private function setLocalVideo():void {
+			if (localVideoIndex < 0)
+				localVideoIndex = ui.newVideo(720, 480, 20, 20, 0);
+			ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
+			ui.resizeVideo(localVideoIndex, 180, 120);
+		}
+		private function setRemoteVideo():void {
+			if (remoteVideoIndex < 0)
+				remoteVideoIndex = ui.newVideo(720, 480, 0, 0, 0);
+			ui.attachNetStreamToVideo(incomingStream, remoteVideoIndex);
+			ui.resizeVideo(remoteVideoIndex, 720, 480);
 		}
 		public function acceptCall():void {
 			// FIXME: it shouldn't do any of this unless it's on the right state
@@ -320,11 +318,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			incomingStream.receiveAudio(true);
 			incomingStream.receiveVideo(true);
 			
-			setSize(1440, 480);
-			if (remoteVideoIndex < 0)
-				remoteVideoIndex = ui.newVideo(720, 480, 720, 0, 0);
-			ui.attachNetStreamToVideo(incomingStream, remoteVideoIndex);
-			ui.resizeVideo(remoteVideoIndex, 720, 480);
+			setSize(720, 480); // Unhide
+			setRemoteVideo();
 
 			// callee publishes media
 			outgoingStream = new NetStream(netConnection, NetStream.DIRECT_CONNECTIONS);
@@ -350,11 +345,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			
 			outgoingStream.send("onCallAccepted", "MY_USERNAME"); // FIXME
 			
-			if (localVideoIndex < 0)
-				localVideoIndex = ui.newVideo(720, 480, 0, 0, 0);
-			ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
-			ui.resizeVideo(localVideoIndex, 720, 480);
-			//localVideoDisplay.attachCamera(cams[default_cam_index]);
+			setLocalVideo();
 			outgoingStream.attachCamera(cams[default_cam_index]);
 			outgoingStream.attachAudio(mics[default_mic_index]);
 								
@@ -369,6 +360,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			}
 			
 			if (outgoingStream) {
+				outgoingStream.attachCamera(null);
+				outgoingStream.attachAudio(null);
 				outgoingStream.close();
 				//outgoingStream.removeEventListener(NetStatusEvent.NET_STATUS, outgoingStreamHandler);
 			}
@@ -378,20 +371,32 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				//controlStream.removeEventListener(NetStatusEvent.NET_STATUS, controlHandler);
 			}
 			
+			// FIXME: See function in RamuneUI.as
+			if (localVideoIndex > -1)
+				ui.clearVideo(localVideoIndex);
+			if (remoteVideoIndex > -1)
+				ui.clearVideo(remoteVideoIndex);
+			
+			setSize(0, 0);
+			
+			// FIXME: Remove
+			remoteName = "";
+			
 			incomingStream = null;
 			outgoingStream = null;
 			controlStream = null;
-			// TODO: Kill local camera
-			// TODO: Clear remote and local video
+			if (localVideoIndex > -1)
+				ui.attachCameraToVideo(null, localVideoIndex); // CHANGED: Killing local camera
 			
-			
-			remoteName = "";
-			
-			changeCallState(CALL_READY);	
+			changeCallState(CALL_READY);
 		}
-		// TODO: Implement ignoreCall()
-		private function ignoreCall():void {
-			
+		public function ignoreCall():void {
+			// TODO: Check State
+			endCall();
+		}
+		public function cancelCall():void {
+			// TODO: Check State
+			endCall();
 		}
 /*******************/
 		public function initializeCams():void {
@@ -416,7 +421,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			if (Microphone.names.length > 0) {
 					mics = new Array();
 				for (var i:uint = 0; i < Microphone.names.length; ++i) {
-					debug("Found Microphone " + i + ": " + Microphone.names[i]);
+					debug("Found Microphone " + i + "	: " + Microphone.names[i]);
 					mics.push(Microphone.getMicrophone(i));
 					mics[i].codec = SoundCodec.SPEEX;
 					mics[i].rate = 11; // Microphone default

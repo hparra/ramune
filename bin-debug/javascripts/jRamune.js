@@ -33,6 +33,9 @@ var jRamune = {
 			flashvars: vars
 		});
 	},
+	connect: function() {
+		ramune.connect();
+	},
 	placeCall: function(name, farID) {
 		ramune.placeCall(name, farID); // NOTE: Defined by ExternalInterface
 	},
@@ -41,6 +44,12 @@ var jRamune = {
 	},
 	endCall: function() {
 		ramune.endCall(); // NOTE: Defined by ExternalInterface
+	},
+	cancelCall: function() {
+		ramune.cancelCall();
+	},
+	ignoreCall: function() {
+		ramune.ignoreCall();
 	},
 	onNetConnectionSuccess: function(farID) {
 		event = jQuery.Event(jRamune.events.NETCONNECTION_SUCCESSFUL);

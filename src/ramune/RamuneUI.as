@@ -26,15 +26,19 @@ package ramune
 			var index:uint = videos.length - 1;
 			this.addChild(videos[index]);
 			videos[index].smoothing = true;
-			videos[index].x = x;
-			videos[index].y = y;
-			// TODO: z-index
+			repositionVideo(index, x, y, z);
 			return index;
 		}
 		
 		public function resizeVideo(index:uint, width:uint, height:uint):void {
 			videos[index].width = width;
 			videos[index].height = height;
+		}
+		
+		public function repositionVideo(index:uint, x:uint, y:uint, z:uint):void {
+			videos[index].x = x;
+			videos[index].y = y;
+			//videos[index].z = z; // FIXME: Unexpected Behavior
 		}
 		
 		/**
@@ -72,6 +76,11 @@ package ramune
 		public function attachNetStreamToVideo(ns:NetStream, index:uint):void {
 			// TODO: error handling
 			videos[index].attachNetStream(ns);
+		}
+		
+		// FIXME: https://bugs.adobe.com/jira/browse/ASC-3115 & https://bugs.adobe.com/jira/browse/SDK-11262
+		public function clearVideo(index:uint):void {
+			videos[index].clear();
 		}
 	}
 }	
