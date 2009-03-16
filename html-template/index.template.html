@@ -306,10 +306,10 @@ University of California, Irvine
 		<!-- jRamune.states.CALL_ESTABLISHED -->
 		<div id="ramunex"></div><!-- Actual Video -->
 		<div id="RamuneCallEstablished"><!-- Remaining UI -->
-			<a id="ptz_button_up" class="ptz_button" href="#">UP</a>
-			<a id="ptz_button_down" class="ptz_button" href="#">DOWN</a>
-			<a id="ptz_button_left" class="ptz_button" href="#">L</a>
-			<a id="ptz_button_right" class="ptz_button" href="#">R</a>
+			<a onclick="moveCamUp()" id="ptz_button_up" class="ptz_button" href="#">UP</a>
+			<a onclick="moveCamDown()" id="ptz_button_down" class="ptz_button" href="#">DOWN</a>
+			<a onclick="moveCamLeft()" id="ptz_button_left" class="ptz_button" href="#">L</a>
+			<a onclick="moveCamRight()" id="ptz_button_right" class="ptz_button" href="#">R</a>
 			<div id="sources">
 				<a class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
 				<a class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
@@ -317,8 +317,8 @@ University of California, Irvine
 				<a class="source" href="#"><img src="images/OhDoctorPNG/StethoRouge256.png" /></a>
 			</div>
 			<div id="zoom_control">
-				<a href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
-				<a href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
+				<a onclick="zoomCamIn()" href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
+				<a onclick="zoomCamOut()" href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
 			</div>
 			<a class="button red_button padded_width" style="position:fixed;right:20;top:20;" href="#" onclick="jRamune.endCall()">Hang Up</a>
 		</div>
