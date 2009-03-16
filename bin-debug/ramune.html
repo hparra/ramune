@@ -44,7 +44,6 @@ University of California, Irvine
 			trace("FABridge Initialized");
 			ramune = FABridge.Ramune.root();
 			fms = ramune.newNetConnection();
-			fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, "0");
 			fms.addEventListener("netStatus", function(event) {
 				trace(event.getInfo().code);
 				switch (event.getInfo().code) {
@@ -85,6 +84,8 @@ University of California, Irvine
 						break;
 				}
 			});
+			fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, "0"); // TODO: Passkey for RamuneTest
+			password = null;
 		}
 		
 		// TODO: Integrate into frescolita
@@ -108,8 +109,9 @@ University of California, Irvine
 			// CHANGED: Eliminated spaces from username
 			// TODO: Further Username Validation
 			username = $('input#login').val().split(' ').join('');
+			password = $('input#password').val();
 			
-			if (username != null) {
+			if (username != null && password != null) {
 				$("#Login").hide();
 				initializeRamune();
 			}
@@ -206,6 +208,10 @@ University of California, Irvine
 			$('input#login').css('font-size', font_size);
 			$('input#login').css('height', font_size + 10); // TODO: Resolve magic number
 			$('input#login').css('width', input_length);
+			$('label#for_password').css('font-size', font_size);
+			$('input#password').css('font-size', font_size);
+			$('input#password').css('height', font_size + 10); // TODO: Resolve magic number
+			$('input#password').css('width', input_length);
 		
 			/* login button */
 			$('#login_button').css('font-size', font_size);
@@ -237,6 +243,8 @@ University of California, Irvine
 						<dl>
 							<dt><label id="for_login" for="login">Name</label></dt>
 							<dd><input id="login" name="login" type="text" /></dd>
+							<dt><label id="for_password" for="password">Passphrase</label></dt>
+							<dd><input id="password" name="password" type="password" /></dd>
 							<dt><a id="login_button" href="#" onclick="loggingin();">Login</a></dt>
 						</dl>
 					</fieldset>
@@ -291,34 +299,26 @@ University of California, Irvine
 					Unknown<!-- default -->
 				</div>
 			</div>
-			<a class="button green_button flow_width top_space" href="#" onclick="jRamune.acceptCall()">Pick Up</a>
-			<a class="button red_button flow_width top_space" href="#" onclick="jRamune.ignoreCall()">Ignore</a>
+			<a class="button green_button flow_width top_space" onclick="jRamune.acceptCall()" href="#">Pick Up</a>
+			<a class="button red_button flow_width top_space" onclick="jRamune.ignoreCall()" href="#">Ignore</a>
 		</div>
 
 		<!-- jRamune.states.CALL_ESTABLISHED -->
 		<div id="ramunex"></div><!-- Actual Video -->
 		<div id="RamuneCallEstablished"><!-- Remaining UI -->
-			<div id="ptz_button_up" class="ptz_button">UP</div>
-			<div id="ptz_button_down" class="ptz_button">DOWN</div>
-			<div id="ptz_button_left" class="ptz_button">L</div>
-			<div id="ptz_button_right" class="ptz_button">R</div>
+			<a id="ptz_button_up" class="ptz_button" href="#">UP</a>
+			<a id="ptz_button_down" class="ptz_button" href="#">DOWN</a>
+			<a id="ptz_button_left" class="ptz_button" href="#">L</a>
+			<a id="ptz_button_right" class="ptz_button" href="#">R</a>
 			<div id="sources">
-				<div class="source">
-					<img src="images/DeviceCamera_256.png" />
-				</div>
-				<div class="source">
-					<img src="images/OhDoctorPNG/otoscopeSilver256.png" />
-				</div>
-				<div class="source">
-					<img src="images/mic_256x256.png" />
-				</div>
-				<div class="source">
-					<img src="images/OhDoctorPNG/StethoRouge256.png" />
-				</div>
+				<a class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
+				<a class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
+				<a class="source" href="#"><img src="images/mic_256x256.png" /></a>
+				<a class="source" href="#"><img src="images/OhDoctorPNG/StethoRouge256.png" /></a>
 			</div>
 			<div id="zoom_control">
-				<img id="zoom_in_button" src="images/viewmag+-256.png" />
-				<img id="zoom_out_button" src="images/viewmag--256.png" />
+				<a href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
+				<a href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
 			</div>
 			<a class="button red_button padded_width" style="position:fixed;right:20;top:20;" href="#" onclick="jRamune.endCall()">Hang Up</a>
 		</div>
