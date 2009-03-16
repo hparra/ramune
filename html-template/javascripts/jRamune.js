@@ -27,6 +27,7 @@ var jRamune = {
 			height: '0',
 			params: {
 				//wmode: "transparent, // FIXME: See http://twitter.com/hgparra/status/1309417926
+				wmode: "window",
 				allowscriptaccess: "always",
 				allowfullscreen: "true"	
 			},
