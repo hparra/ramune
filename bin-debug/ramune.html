@@ -33,6 +33,7 @@ University of California, Irvine
 
 		var ramune;
 		var username;
+		var password; // FIXME: Bad!
 
 		var friends; /* RemoteSharedObject */
 		var me; /* RemoteShared Object Data[username] */
@@ -85,10 +86,17 @@ University of California, Irvine
 						jRamune.connect();
 
 						break;
+					case "NetConnection.Connect.Closed": // NOTE: I think this is what's going wrong...
+						fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, password, "0");
+						break;
+					case "NetConnection.Connect.Failed": // Bad Password?
+						trace("REJECTED");
+						window.location.href = "/";
+						break;
 				}
 			});
-			fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, "0"); // TODO: Passkey for RamuneTest
-			password = null;
+			fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, password, "0"); // TODO: Passkey for RamuneTest
+			// password = null; // NOTE: Bad, but we want to allow graceful reconnect
 		}
 		
 		// TODO: Integrate into frescolita
@@ -258,6 +266,14 @@ University of California, Irvine
 		<!-- jRamune.states.CALL_NOT_READY -->
 		<div id="RamuneCallNotReady">
 			<h1>Please Wait...</h1>
+			<h2>If you are stuck at this message it may be because:</h2>
+			<ul>
+				<li>You used the wrong password. <a href="ramune.html">Go back to login</a>.</li>
+				<li>You didn't provide a username. <a href="ramune.html">Go back to login</a>.</li>
+				<li>You're using Internet Explorer, which is not supported. <a href="http://www.mozilla.com/en-US/firefox/">Install Firefox</a>.</li>
+				<li>You don't have Flash Player 10. <a href="http://get.adobe.com/flashplayer/">Install Flash Player 10</a>.</li>
+			</ul>
+			<p>If you are still having problems please contact <a href="mailto:hparra@calit2.uci.edu">hparra@calit2.uci.edu</a>.</p>
 		</div>
 
 		<!-- jRamune.states.CALL_READY -->
