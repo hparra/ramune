@@ -8,7 +8,7 @@ body {
 	padding: 0px;
 	width: 100%;
 	height: 100%;
-	background-image: url('../images/beach.jpg'); // FIXME: Set background-image through JS;
+	background-image: url('../images/beach.jpg'); /* FIXME: Set background-image through JS */
 }
 
 h1 {
@@ -35,7 +35,7 @@ h1 {
 	-webkit-border-radius: 10px; 
     -moz-border-radius: 10px;*/
 	/* VAR */ margin-left: -104px; /* See state #RamuneCallCalling */
-	/* VAR */ margin-top: -190px; /* HACK */
+	/* VAR */ margin-top: -190px; /* FIXME: Hack. Should be dynamic */
 }
 
 /* Ramune */
@@ -216,7 +216,7 @@ padding:15px;
 /* CHANGED: Removed #buddy_list_cancel_button & #cancel_location */
 /* CHANGED: Abstraction. #calling_outgoing_cancel_button is now .red_button */
 
-.button { /* a flex width button */
+.button { /* TODO: Force on <a> only */
 	display: block;
 	font-family: arial;
 	text-align: center;
@@ -226,16 +226,16 @@ padding:15px;
 	word-spacing: normal;
 	font-weight: bold;
 	border: solid 1px #000;
-	/* VAR */ -webkit-border-radius: 10px; 
+	/* VAR */ -webkit-border-radius: 8px; 
     /* VAR */ -moz-border-radius: 8px;
     /* VAR */ width: auto;
     /* VAR */ font-size: 30px;
-    /* VAR */ height: 50px;
-    /* VAR */ line-height: 50px;
+    /* VAR */ height: 50px; /* NOTE: font-size + 'padding' */
+    /* VAR */ line-height: 50px; /* NOTE: Should always equal height */
 }
 
-.top_space {
-	/* HACK */ margin-top: 10px;
+.top_space { /* NOTE: Hack. Not sure how to best implement spacing yet. */
+	margin-top: 10px;
 }
 
 .padded_width {
@@ -247,12 +247,12 @@ padding:15px;
 	width: 100%;
 }
 
-.red_button { /* NOTE: All "Cancel" buttons should be like this */
+.red_button { /* NOTE: Use with "No", "Cancel", "Abort", "Delete", et. al */
 	background-color: #B22222; /* firebrick */
 	color: white;
 }
 
-.green_button {
+.green_button { /* NOTE: Use with (yes | go | accept | true) */
 	background-color: #228B22; /* forest green */
 	color: white;
 }
@@ -264,53 +264,4 @@ padding:15px;
 /* CHANGED: Deleted everything else. Compare to CSS in FRESCOLITA/tmp/test.html */
 
 /* CHANGED: Added CSS from FRESCOLITA/public/frescolita/stylesheets/main.css */
-
-#remotePTZ { /* CHANGED: Positioning */
-	height:300px;
-	bottom: 20px;
-	right: 20px;
-	position: fixed;
-	width:300px;
-}
-
-.left{
-	width: 100px;
-	height: 100px;
-	
-	position: absolute;
-	left: 0px;
-	top: 50%;
-	margin-top: -50px;
-}
-
-.right{
-	width: 100px;
-	height: 100px;
-	
-	position: absolute;
-	left: 100%;
-	margin-left: -100px;
-	top: 50%;
-	margin-top: -50px;
-}
-
-.up{
-	width: 100px;
-	height: 100px;
-	
-	position: absolute;
-	left: 50%;
-	margin-left: -50px;
-	top: 0px;
-}
-
-.down{
-	width: 100px;
-	height: 100px;
-	
-	position: absolute;
-	left: 50%;
-	margin-left: -50px;
-	top: 100%;
-	margin-top: -100px;
-}
+/* CHANGED: Deleted CSS from FRESCOLITA/public/frescolita/stylesheets/main.css */

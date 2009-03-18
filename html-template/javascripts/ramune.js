@@ -5,12 +5,15 @@ function trace(msg) {
 
 
 function moveCamUp() {
-	trace("moveCamUp");
+	command = VISCA.command(1, VISCA.subcommand.panTiltDriveUp("01", "01"));
+	trace("moveCamUp VISCA ASCII: " + command);
+	WENDICall("/resources/visca_camera", hexify(command));
 }
 
 
 function moveCamDown() {
-	trace("moveCamDown");
+	command = "";
+	trace("moveCamDown sent: " + command);
 }
 
 
@@ -29,4 +32,8 @@ function zoomCamIn() {
 
 function zoomCamOut() {
 	trace("zoomCamOut");
+}
+
+function WENDICall(resource, body) {
+	trace("Hexified Command: " + body);
 }

@@ -15,15 +15,18 @@ University of California, Irvine
 		<link rel="stylesheet" type="text/css" href="stylesheets/ramune.css" />
 		<link rel="stylesheet" type="text/css" href="stylesheets/ramune.login.css" />
 		<link rel="stylesheet" type="text/css" href="stylesheets/jquery.jgrowl.css" />
-		<script type="text/javascript" src="javascripts/FABridge.js" ></script>
-		<script type="text/javascript" src="javascripts/jquery-1.3.2.js" ></script>
-		<script type="text/javascript" src="javascripts/jquery.swfobject.js" ></script>
-		<script type="text/javascript" src="javascripts/jquery.dom-builder.js" ></script>
-		<script type="text/javascript" src="javascripts/jquery.jgrowl.js" ></script>
-		<script type="text/javascript" src="javascripts/jquery.corners.js" ></script>
-		<script type="text/javascript" src="javascripts/jquery.blockUI.js" ></script>
-		<script type="text/javascript" src="javascripts/jRamune.js" ></script>
-		<script type="text/javascript" src="javascripts/ramune.js" ></script>
+		<script type="text/javascript" src="javascripts/FABridge.js"></script>
+		<script type="text/javascript" src="javascripts/jquery-1.3.2.js"></script>
+		<script type="text/javascript" src="javascripts/jquery.swfobject.js"></script>
+		<script type="text/javascript" src="javascripts/jquery.dom-builder.js"></script>
+		<script type="text/javascript" src="javascripts/jquery.jgrowl.js"></script>
+		<script type="text/javascript" src="javascripts/jquery.corners.js"></script>
+		<script type="text/javascript" src="javascripts/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="javascripts/jRamune.js"></script>
+		<script type="text/javascript" src="javascripts/ramune.js"></script>
+		<script type="text/javascript" src="javascripts/hexify.js"></script>
+		<script type="text/javascript" src="javascripts/VISCA.js"></script>
+		
 		<style>
 		</style>
 		<script type="text/javascript">
@@ -311,16 +314,16 @@ University of California, Irvine
 			<a onclick="moveCamLeft()" id="ptz_button_left" class="ptz_button" href="#">L</a>
 			<a onclick="moveCamRight()" id="ptz_button_right" class="ptz_button" href="#">R</a>
 			<div id="sources">
-				<a class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
-				<a class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
-				<a class="source" href="#"><img src="images/mic_256x256.png" /></a>
-				<a class="source" href="#"><img src="images/OhDoctorPNG/StethoRouge256.png" /></a>
+				<a onclick="" class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
+				<a onclick="" class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
+				<a onclick="" class="source" href="#"><img src="images/mic_256x256.png" /></a>
+				<a onclick="" class="source" href="#"><img src="images/OhDoctorPNG/StethoRouge256.png" /></a>
 			</div>
 			<div id="zoom_control">
-				<a href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
-				<a href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
+				<a onclick="zoomCamIn()" href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
+				<a onclick="zoomCamOut()" href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
 			</div>
-			<a class="button red_button padded_width" style="position:fixed;right:20;top:20;" href="#" onclick="jRamune.endCall()">Hang Up</a>
+			<a onclick="jRamune.endCall()" class="button red_button padded_width" style="position:fixed;right:20;top:20;" href="#">Hang Up</a><!-- TODO: Style in CSS -->
 		</div>
 
 		<!-- jRamune.states.CALL_FAILED -->

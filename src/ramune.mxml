@@ -405,7 +405,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				for (var i:uint = 0; i < Camera.names.length; ++i) {
 					debug("Found Camera " + i + ": " + Camera.names[i]);
 					cams.push(Camera.getCamera(i.toString()));
-					cams[i].setQuality(0, 80);
+					cams[i].setQuality(0, 85);
 					cams[i].setMode(720, 480, 25);
 					cams[i].setKeyFrameInterval(25);
 				}
