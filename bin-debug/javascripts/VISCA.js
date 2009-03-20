@@ -34,6 +34,22 @@ var VISCA = {
 		
 		panTiltDriveHome: function(){
 			return "01 06 04 FF";
+		},
+		
+		panTiltDriveStop: function(v, w) {
+			return "01 06 01 " + v + " " + w + " 03 03 FF";
+		},
+		
+		camZoomStop: function() {
+			return "01 04 07 00 FF";
+		},
+		
+		camZoomTeleStandard: function() {
+			return "01 04 07 02 FF";
+		},
+		
+		camZoomWideStandard: function() {
+			return "01 04 07 03 FF";
 		}
 	}
 }

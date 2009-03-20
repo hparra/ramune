@@ -326,19 +326,19 @@ University of California, Irvine
 		<!-- jRamune.states.CALL_ESTABLISHED -->
 		<div id="ramunex"></div><!-- Actual Video -->
 		<div id="RamuneCallEstablished"><!-- Remaining UI -->
-			<a onclick="moveCamUp()" id="ptz_button_up" class="ptz_button" href="#">UP</a>
-			<a onclick="moveCamDown()" id="ptz_button_down" class="ptz_button" href="#">DOWN</a>
-			<a onclick="moveCamLeft()" id="ptz_button_left" class="ptz_button" href="#">L</a>
-			<a onclick="moveCamRight()" id="ptz_button_right" class="ptz_button" href="#">R</a>
+			<a onmousedown="cameraCommand('MOVE_UP')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_up" class="ptz_button" href="#">UP</a>
+			<a onmousedown="cameraCommand('MOVE_DOWN')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_down" class="ptz_button" href="#">DOWN</a>
+			<a onmousedown="cameraCommand('MOVE_LEFT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_left" class="ptz_button" href="#">L</a>
+			<a onmousedown="cameraCommand('MOVE_RIGHT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_right" class="ptz_button" href="#">R</a>
 			<div id="sources">
-				<a onclick="" class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
-				<a onclick="" class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
+				<a onclick="videoswitchCommand(1)" class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
+				<a onclick="videoswitchCommand(2)" class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
 				<a onclick="" class="source" href="#"><img src="images/mic_256x256.png" /></a>
 				<a onclick="" class="source" href="#"><img src="images/OhDoctorPNG/StethoRouge256.png" /></a>
 			</div>
 			<div id="zoom_control">
-				<a onclick="zoomCamIn()" href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
-				<a onclick="zoomCamOut()" href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
+				<a onmousedown="cameraCommand('ZOOM_IN')" onmouseup="cameraCommand('ZOOM_STOP')" href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
+				<a onmousedown="cameraCommand('ZOOM_OUT')" onmouseup="cameraCommand('ZOOM_STOP')" href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
 			</div>
 			<a onclick="jRamune.endCall()" class="button red_button padded_width" style="position:fixed;right:20;top:20;" href="#">Hang Up</a><!-- TODO: Style in CSS -->
 		</div>
