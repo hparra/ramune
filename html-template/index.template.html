@@ -137,6 +137,7 @@ University of California, Irvine
 				$('#' + jRamune.states[i]).hide();
 		}
 		
+		// TODO: Abstract as initializeBindings
 		/* CONTROLLER */
 		function initializeRamune() {
 		
@@ -199,6 +200,7 @@ University of California, Irvine
 				
 			});
 			
+			// TODO: Remove
 			/* FABridge */
 			FABridge.addInitializationCallback("Ramune", onFABridgeInitialized);
 			
@@ -243,6 +245,15 @@ University of California, Irvine
 			$('div#login_box').css('opacity', login_box_opacity);
 
 		}
+		
+		function showRamuneSettings() {
+			$.blockUI({
+	        	message: $("#RamuneSettings")
+	    	});
+		}
+		function hideRamuneSettings() {
+			$.unblockUI(); // FIXME: Do you see where this can be super buggy?
+		}
 		</script>
 	</head>
 	<body scroll="no"><!-- TODO: Research this tag option. Valid HTML? -->
@@ -261,6 +272,20 @@ University of California, Irvine
 						</dl>
 					</fieldset>
 				</div>
+			</div>
+		</div>
+		
+		<!-- NOTE: This is tricky, because design will depend on WMODE -->
+		<!-- jRamune psuedo state for settings modal -->
+		<div id="RamuneSettings">
+			<h1>Ramune Settings</h1>
+			<p>This is not meant to be user friendly yet!</p>
+			<a onclick="hideRamuneSettings()" href="#">Close Settings</a>
+			<div id="RamuneCamSettings">
+				<h2>Camera Settings</h2>
+			</div>
+			<div id ="RamuneMicSettings">
+				<h2>Microphone Settings</h2>
 			</div>
 		</div>
 		
@@ -340,7 +365,8 @@ University of California, Irvine
 				<a onmousedown="cameraCommand('ZOOM_IN')" onmouseup="cameraCommand('ZOOM_STOP')" href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
 				<a onmousedown="cameraCommand('ZOOM_OUT')" onmouseup="cameraCommand('ZOOM_STOP')" href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
 			</div>
-			<a onclick="jRamune.endCall()" class="button red_button padded_width" style="position:fixed;right:20;top:20;" href="#">Hang Up</a><!-- TODO: Style in CSS -->
+			<a onclick="showRamuneSettings()" id="settings_button" class="button green_button padded_width" style="position:fixed;right:100;top:20;" href="#">Settings</a>
+			<a onclick="jRamune.endCall()" id="end_call_button" class="button red_button padded_width" style="position:fixed;right:20;top:20;" href="#">Hang Up</a><!-- TODO: Style in CSS -->
 		</div>
 
 		<!-- jRamune.states.CALL_FAILED -->

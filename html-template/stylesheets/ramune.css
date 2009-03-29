@@ -81,7 +81,9 @@ h1 {
 	font-weight: bold;
 }
 
-/* CALL_CALLING */
+#RamuneSettings {
+	display: none;
+}
 
 #RamuneCallCalling { /* CHANGED: Removed #calling_outgoing et. al. Replaced with #RamuneCallCalling et. al. */
 	/* VAR */ width: 208px; /* width of largest element + border */

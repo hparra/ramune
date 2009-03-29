@@ -1,0 +1,182 @@
+<style>
+a.button { /* TODO: Force on <a> only */
+	display: block;
+	font-family: arial;
+	text-align: center;
+	text-decoration: none;
+	letter-spacing: normal;
+	text-transform: none;
+	word-spacing: normal;
+	font-weight: bold;
+	border: solid 1px #000;
+	/* VAR */ -webkit-border-radius: 8px; 
+    /* VAR */ -moz-border-radius: 8px;
+    /* VAR */ width: auto;
+    /* VAR */ font-size: 30px;
+    /* VAR */ height: 50px; /* NOTE: font-size + 'padding' */
+    /* VAR */ line-height: 50px; /* NOTE: Should always equal height */
+}
+
+	a.padded_width {
+		width: auto;
+		padding: 0 20px 0 20px;
+	}
+	a.width_192 {
+		width: 190px;
+	}
+
+	a.flow_width {
+		width: 100%;
+	}
+
+	a.red_button { /* NOTE: Use with "No", "Cancel", "Abort", "Delete", et. al */
+		background-color: #B22222; /* firebrick */
+		color: white;
+	}
+
+	a.green_button { /* NOTE: Use with (yes | go | accept | true) */
+		background-color: #228B22; /* forest green */
+		color: white;
+	}
+
+
+	a.ptz_button {
+		display: block;
+		/* VAR */ width: 64px;
+		/* VAR */ height: 64px;
+	}
+	a.ptz_button img {
+		border: none;
+		width: 100%;
+		height: 100%;
+	}
+	
+	#pantilt_control {
+		width: 192;
+		height: 192;
+		/*background-color: #CCC;*/
+		-webkit-border-radius:10px;
+		-moz-border-radius:10px;
+		float: right;
+	}
+		#ptz_button_up {
+			/* VAR */ margin: 0 64 0 64;
+		}
+		#ptz_button_left {
+			float: left;
+		}
+		#ptz_button_stop {
+			float: left;
+		}
+		#ptz_button_right {
+			float: left;
+		}
+		#ptz_button_down {
+			/* VAR */ margin: 0 64 0 64;
+		}
+	/* END */
+	
+	#zoom_control {
+		/*background-color: #AAAAAA;*/
+		width: 192;
+		height: 64;
+		-webkit-border-radius:10px;
+		-moz-border-radius:10px;
+		float: right;
+	}
+		#zoom_in_button {
+			float: left;
+			margin: 0 16 0 16;
+		}
+		#zoom_out_button {
+			float: left;
+			margin: 0 16 0 16;
+		}
+	
+	#ui_control {
+		/*background-color: #AAAAAA;*/
+		width: 192;
+		height: 64;
+		-webkit-border-radius:10px;
+		-moz-border-radius:10px;
+		float: right;
+	}
+	
+	#controls {
+		float: right;
+		width: 192;
+		height: 480;
+	}
+	
+	#centerer {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 960;
+		height: 600;
+		margin-left: -512px;
+		margin-top: -300px;
+	}
+	#end_call_button {
+		
+	}
+	#settings_button {
+		float: right;
+	}
+	#sources {
+		margin-top: 20;
+		background-color: #777;
+		height: 94;
+		width: 720;
+		float: left;
+		-webkit-border-radius:10px;
+		-moz-border-radius:10px;
+	}
+	a.source {
+		display:block;
+		float: left;
+		height:64px;
+		width:64px;
+		padding:15px;
+	}
+	a.source img {
+		width: 100%;
+		height: 100%;
+		border: 0;
+	}
+	.top_space { /* NOTE: Hack. Not sure how to best implement spacing yet. */
+		margin-top: 14px;
+	}
+</style>
+
+<body style="background-color:black">
+<div id="centerer">
+	<div id="ramunex" style="width:720;height:480;background-color:blue;float:left">
+	</div>
+
+	<div id="controls">
+		<a onclick="jRamune.endCall()" id="end_call_button" class="button red_button width_192" href="#">Hang Up</a>
+		<a onclick="showRamuneSettings()" id="settings_button" class="button green_button width_192 top_space" href="#">Settings</a>
+		<div id="pantilt_control" class="top_space">
+			<a onmousedown="cameraCommand('MOVE_UP')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_up" class="ptz_button" href="#"><img src="../html-template/images/1uparrow-256.png" /></a>
+			<a onmousedown="cameraCommand('MOVE_LEFT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_left" class="ptz_button" href="#"><img src="../html-template/images/1leftarrow-256.png" /></a>
+			<a onclick="cameraCommand('MOVE_STOP')" id="ptz_button_stop" class="ptz_button" href="#"><img src="../html-template/images/cnrdelete-all-256.png" /></a>
+			<a onmousedown="cameraCommand('MOVE_RIGHT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_right" class="ptz_button" href="#"><img src="../html-template/images/1rightarrow-256.png" /></a>
+			<a onmousedown="cameraCommand('MOVE_DOWN')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_down" class="ptz_button" href="#"><img src="../html-template/images/1downarrow-256.png" /></a>	
+		</div>
+		<div id="zoom_control" class="top_space">
+			<a onmousedown="cameraCommand('ZOOM_IN')" onmouseup="cameraCommand('ZOOM_STOP')" id="zoom_in_button" class="ptz_button" href="#"><img src="../html-template/images/viewmag+-256.png" /></a>
+			<a onmousedown="cameraCommand('ZOOM_OUT')" onmouseup="cameraCommand('ZOOM_STOP')" id="zoom_out_button" class="ptz_button" href="#"><img src="../html-template/images/viewmag--256.png" /></a>
+		</div>	
+		<div id="ui_control" class="top_space">
+		</div>
+	</div>
+	
+	<div id="sources">
+		<a onclick="videoswitchCommand(1)" class="source" href="#"><img src="../html-template/images/DeviceCamera_256.png" /></a>
+		<a onclick="videoswitchCommand(2)" class="source" href="#"><img src="../html-template/images/OhDoctorPNG/otoscopeSilver256.png" /></a>
+		<a onclick="" class="source" href="#"><img src="../html-template/images/mic_256x256.png" /></a>
+		<a onclick="" class="source" href="#"><img src="../html-template/images/OhDoctorPNG/StethoRouge256.png" /></a>
+	</div>
+</div>
+</body>
