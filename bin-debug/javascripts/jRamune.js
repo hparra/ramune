@@ -23,6 +23,7 @@ var jRamune = {
 		$(s).flash({
 			id: 'ramune',
 			swf: path + 'ramune.swf',
+			style: 'z-index: 1;',
 			width: '0',
 			height: '0',
 			params: {

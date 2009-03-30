@@ -349,24 +349,33 @@ University of California, Irvine
 		</div>
 
 		<!-- jRamune.states.CALL_ESTABLISHED -->
-		<div id="ramunex"></div><!-- Actual Video -->
-		<div id="RamuneCallEstablished"><!-- Remaining UI -->
-			<a onmousedown="cameraCommand('MOVE_UP')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_up" class="ptz_button" href="#">UP</a>
-			<a onmousedown="cameraCommand('MOVE_DOWN')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_down" class="ptz_button" href="#">DOWN</a>
-			<a onmousedown="cameraCommand('MOVE_LEFT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_left" class="ptz_button" href="#">L</a>
-			<a onmousedown="cameraCommand('MOVE_RIGHT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_right" class="ptz_button" href="#">R</a>
-			<div id="sources">
+		<div id="ramunex"></div><!-- NOTE: Actual SWF. Must 'display' at all times -->
+		<div id="RamuneCallEstablished"><!-- NOTE: Remaining UI -->
+			<div id="ramune_placeholder" style="width:720;height:480;background-color:pink;float:left"></div>
+			<div id="controls">
+				<a onclick="jRamune.endCall()" id="end_call_button" class="button red_button width_192" href="#">Hang Up</a>
+				<a onclick="showRamuneSettings()" id="settings_button" class="button green_button width_192 top_space" href="#">Settings</a>
+				<div id="pantilt_control" class="top_space">
+					<a onmousedown="cameraCommand('MOVE_UP')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_up" class="ptz_button" href="#"><img src="images/1uparrow-256.png" /></a>
+					<a onmousedown="cameraCommand('MOVE_LEFT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_left" class="ptz_button" href="#"><img src="images/1leftarrow-256.png" /></a>
+					<a onclick="cameraCommand('MOVE_STOP')" id="ptz_button_stop" class="ptz_button" href="#"><img src="images/cnrdelete-all-256.png" /></a>
+					<a onmousedown="cameraCommand('MOVE_RIGHT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_right" class="ptz_button" href="#"><img src="images/1rightarrow-256.png" /></a>
+					<a onmousedown="cameraCommand('MOVE_DOWN')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_down" class="ptz_button" href="#"><img src="images/1downarrow-256.png" /></a>	
+				</div>
+				<div id="zoom_control" class="top_space">
+					<a onmousedown="cameraCommand('ZOOM_IN')" onmouseup="cameraCommand('ZOOM_STOP')" id="zoom_in_button" class="ptz_button" href="#"><img src="images/viewmag+-256.png" /></a>
+					<a onmousedown="cameraCommand('ZOOM_OUT')" onmouseup="cameraCommand('ZOOM_STOP')" id="zoom_out_button" class="ptz_button" href="#"><img src="images/viewmag--256.png" /></a>
+				</div>	
+				<div id="ui_control" class="top_space">
+				</div>
+			</div>
+			<div id="sources"><!-- TODO: Rename me -->
+				<a onclick="" class="source" href="#"><img src="images/bookmark_folder-256.png" /></a>
 				<a onclick="videoswitchCommand(1)" class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
 				<a onclick="videoswitchCommand(2)" class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
 				<a onclick="" class="source" href="#"><img src="images/mic_256x256.png" /></a>
 				<a onclick="" class="source" href="#"><img src="images/OhDoctorPNG/StethoRouge256.png" /></a>
 			</div>
-			<div id="zoom_control">
-				<a onmousedown="cameraCommand('ZOOM_IN')" onmouseup="cameraCommand('ZOOM_STOP')" href="#"><img id="zoom_in_button" src="images/viewmag+-256.png" /></a>
-				<a onmousedown="cameraCommand('ZOOM_OUT')" onmouseup="cameraCommand('ZOOM_STOP')" href="#"><img id="zoom_out_button" src="images/viewmag--256.png" /></a>
-			</div>
-			<a onclick="showRamuneSettings()" id="settings_button" class="button green_button padded_width" style="position:fixed;right:100;top:20;" href="#">Settings</a>
-			<a onclick="jRamune.endCall()" id="end_call_button" class="button red_button padded_width" style="position:fixed;right:20;top:20;" href="#">Hang Up</a><!-- TODO: Style in CSS -->
 		</div>
 
 		<!-- jRamune.states.CALL_FAILED -->
