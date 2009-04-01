@@ -121,7 +121,6 @@ h1 {
 	top: 50%;
 	margin-left: -481px;
 	margin-top: -300px;
-	z-index: -1; /* FIXME: I don't like this. It's irrelevant when using WMODE=window on windows but macs want need it */
 }
 
 

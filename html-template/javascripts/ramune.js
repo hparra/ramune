@@ -86,6 +86,11 @@ function cameraCommand(str) {
 	WENDICall("/resources/devices/ptzcamera", VISCA.command(1, subcommand));
 }
 
+function startFrameApplication() {
+	jRamune.hide();
+	$("#placeholder").html("Hi!");
+}
+
 /**
  * Sends command to WENDI Server to switch S-Video Input
  *
@@ -110,3 +115,6 @@ function WENDICall(resource, body) {
 	});
 }
 
+function flipScreens() {
+	
+}

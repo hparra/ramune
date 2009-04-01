@@ -59,8 +59,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		private var remoteVideoIndex:int = -1;
 		private var localVideoIndex:int = -1;
 
-		//private var remoteVideo:Video;
-		//private var localVideo:Video;
+		private var previousWidth:uint;
+		private var previousHeight:uint;
 		
 		/*
 		 * Uber Methods
@@ -342,7 +342,6 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				return true; 
 			}
 			outgoingStream.client = o;
-			
 			outgoingStream.send("onCallAccepted", "MY_USERNAME"); // FIXME
 			
 			setLocalVideo();
@@ -391,12 +390,12 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			changeCallState(CALL_READY);
 		}
 		public function ignoreCall():void {
-			// TODO: Check State
-			endCall();
+			if (callState == CALL_RINGING)
+				endCall();
 		}
 		public function cancelCall():void {
-			// TODO: Check State
-			endCall();
+			if (callState == CALL_CALLING)
+				endCall();
 		}
 /*******************/
 		public function initializeCams():void {
@@ -439,11 +438,18 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			}
 		}
 		public function setSize(width:Number, height:Number):void {	
+			previousWidth = this.width;
+			previousHeight = this.height;
 			this.width = width;
 			this.height = height;
-			
-			// should probably dispatch event instead
 			ExternalInterface.call("jRamune.onResize", this.width, this.height);
+		}
+		public function hide():void {
+			// detach videos
+			this.setSize(0, 0);
+		}
+		public function show():void {
+			this.setSize(previousWidth, previousHeight);
 		}
 		private function debug(msg:String):void {
 			trace(msg);

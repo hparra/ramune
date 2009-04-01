@@ -8,31 +8,7 @@ California Institute for Telecommunications and Information Technology
 University of California, Irvine
 
 -->
-<html lang="en">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>${title}</title>
-		<script type="text/javascript" src="javascripts/prototype.js"></script>
-		<script type="text/javascript" src="javascripts/scriptaculous.js"></script>
-		<script type="text/javascript" src="javascripts/sound.js"></script>
-		<script type="text/javascript" src="javascripts/swfobject/swfobject.js"></script>
-		<script type="text/javascript" src="javascripts/swfobject/FABridge.js"></script>
-		<script type="text/javascript" src="javascripts/Ramune.js"></script>
-		<script type="text/javascript" src="javascripts/window.js"></script>
-		<script type="text/javascript" src="javascripts/RamuneTest.js"></script>
-		<script type="text/javascript">	
-		function onLoad() {
 
-			random = String(Math.floor(Math.random() * 10000));
-			
-			document.forms['connection']['user_id'].value = 0;
-			document.forms['streams']['remote_stream'].value = random;
-			
-			uid = random; //prompt("What is your username?", "random_" + random);
-
-			initializeRamune(uid);
-		}
-		</script>
 		<style type="text/css" media="all">
 			body {
 				margin: 0px;
@@ -59,70 +35,6 @@ University of California, Irvine
 				background-color: #75A1D0;
 			}
 		</style>
-	</head>
-	<body onload="onLoad();">
-			<h1>Ramune Test Interface</h1>
-			<h2>Stratus Key: 957c10737240a05c0143ce7f-b33403f49938</h2>
-			
-			<!-- FMS NetConnection -->
-			<form id="connection">
-				<fieldset>
-					<legend>Connection</legend>
-					<dl>
-						<dt><label for="protocol">Protocol://Server/Application</label></dt>
-						<dd>
-							<!-- Protocol -->
-							<select id="protocol" name="protocol">
-								<option value="rtmfp">RTMFP</option>
-								<option value="rtmp">RTMP</option>
-								<option value="rtmpe">RTMPE</option>
-								<option value="rtmps">RTMPS</option>
-								<option value="rtmpt">RTMPT</option>
-								<option value="rtmpte">RTMPTE</option>
-							</select>
-							<!-- Server -->
-							<input id="server" name="server" value="stratus.adobe.com">
-							<!-- Application -->
-							<input id="application" name="application" value="957c10737240a05c0143ce7f-b33403f49938">
-							<!-- ID (Legacy. May change) -->
-							<input id="user_id" name="user_id" value="0">
-							<button id="connect" name="connect" type="button" onclick="connection()">Connect</button>
-						</dd>
-					</dl>
-				</fieldset>
-			</form>
-
-			<!-- Stream -->
-			<form id="streams">
-				<fieldset>
-					<legend>Stream</legend>
-					<dl>
-						<dt><label for="local_stream">Local Stream:</label></dt>
-						<dd>
-							<input id="local_stream" name="local_stream" value="0">
-							<button id="publish" name="publish" type="button" onclick="publish_stream()">Publish</button>
-							<button id="stop_publish" name="stop_publish" type="button" onclick="stop_publish_stream()">Stop</button>
-						</dd>
-						
-						<dt><label for="remote_client">Remote Client:</label></dt>
-						<dd>
-							<input id="remote_client" name="remote_client" value="0">
-							<button id="remote_client_connect" name="remote_client_connect" type="button" onclick="remote_client_connection()">Connect</button>
-						</dd>
-						
-						<dt><label for="remote_stream">Remote Stream:</label></dt>
-						<dd>
-							<input id="remote_stream" name="remote_stream" value="0">
-							<button id="play" name="play" type="button" onclick="play_stream()">Play</button>
-						</dd>
-					</dl>
-				</fieldset>
-			</form>
-
-			<!-- User List -->
-			<h3>Friends</h3><a href="#" onclick="display_client_list();">Refresh</a>
-			<div id="users">
-			</div>
 
 			
 			
@@ -137,53 +49,12 @@ University of California, Irvine
 			<form id="local_camera">
 				<fieldset>
 					<legend>Local Camera</legend>
-					<dl>
-					
+					<h2>Normal</h2>
+					<dl>					
 						<!-- Local Camera List -->
-						<!-- TODO: improve terminology -->
-						<dt><label for="local_camera">Local Camera</label></dt>
-						<!-- TODO: Make into pull-down list -->
-						<dd>
-							<div id="cams"></div>
-						</dd>
-					
-						<!-- Local Bandwidth is an odd parameter. Why is it associated with only the camera? -->
-						<!-- Local Bandwidth -->
-						<dt><label for="local_bandwidth">Local Bandwidth (bps):</label></dt>
-						<dd>
-							<input id="local_bandwidth" name="local_bandwidth" value="100000">
-							<button id="local_bandwidth_submit" name="local_bandwidth_submit" type="button" onclick="set_local_bandwidth(document.forms['local_camera']['local_bandwidth'].value)">Change</button>
-						</dd>
-						<!-- Local Quality -->
-						<dt><label for="local_quality">Local Quality:</label></dt>
-						<dd>
-							<input id="local_quality" name="local_quality" value="90">
-							<button id="local_quality_submit" name="local_quality_submit" type="button" onclick="set_local_quality(document.forms['local_camera']['local_quality'].value)">Change</button>
-						</dd>
-						
-						<!-- Local Cam Mode -->
-						<dt><label for="local_mode">Local Mode:</label></dt>
-						<dd>
-							<select id="local_mode" name="local_mode" onchange="set_local_cam_mode(document.forms['local_camera']['local_mode'].value)">
-								<option value="160,120">(4:3) 160 x 120</option>
-								<option value="320,240">(4:3) 320 x 240</option>
-								<option value="640,480">(4:3) SD/NTSC (640 x 480)</option>
-								<option value="800,600">(4:3) 800 x 600</option>
-								<option value="960,720">(4:3) 960 x 720</option>
-								<option value="1024,768">(4:3) 1024 x 768</option>
-								<option value="1280,1024">(4:3) 1280 x 1024</option>
-								<option value="1600,1200">(4:3) 1600 x 1200</option>
-								<option value="320,180">(16:9) 320 x 180</option>
-								<option value="480,270">(16:9) 480 x 270</option>
-								<option value="640,360">(16:9) SD/NTSC (640 x 360)</option>
-								<option value="720,480">(16:9) DV/NTSC (720 x 480)</option>
-								<option value="720,480">(16:9) DVD (720 x 480)</option>
-								<option value="1280,720">(16:9) HD 720p (1280 x 720)</option>
-								<option value="1920,1080">(16:9) HD 1080p (1920 x 1080) NOT SUPPORTED</option>
-							</select>
-						</dd>
-						<!-- Local Cam Size -->
-						<dt><label for="local_size">Local Size:</label></dt>
+						<dt><label for="local_camera">Active Camera</label></dt>
+						<dd><div id="cams"></div></dd>
+						<dt><label for="local_size">Incoming Video Size:</label></dt>
 						<dd>
 							<select id="local_size" name="local_size" onchange="set_local_cam_size(document.forms['local_camera']['local_size'].value)">
 								<option value="160,120">(4:3) 160 x 120</option>
@@ -203,6 +74,34 @@ University of California, Irvine
 								<option value="1920,1080">(16:9) HD 1080p (1920 x 1080) NOT SUPPORTED</option>
 							</select>
 						</dd>
+						<!-- Local Quality -->
+						<dt><label for="local_quality">Video Quality:</label></dt>
+						<dd>
+							<input id="local_quality" name="local_quality" value="90">
+							<button id="local_quality_submit" name="local_quality_submit" type="button" onclick="set_local_quality(document.forms['local_camera']['local_quality'].value)">Change</button>
+						</dd>						
+						<!-- Local Cam Mode -->
+						<dt><label for="local_mode">Outgoing Video Resolution:</label></dt>
+						<dd>
+							<select id="local_mode" name="local_mode" onchange="set_local_cam_mode(document.forms['local_camera']['local_mode'].value)">
+								<option value="160,120">(4:3) 160 x 120</option>
+								<option value="320,240">(4:3) 320 x 240</option>
+								<option value="640,480">(4:3) SD/NTSC (640 x 480)</option>
+								<option value="800,600">(4:3) 800 x 600</option>
+								<option value="960,720">(4:3) 960 x 720</option>
+								<option value="1024,768">(4:3) 1024 x 768</option>
+								<option value="1280,1024">(4:3) 1280 x 1024</option>
+								<option value="1600,1200">(4:3) 1600 x 1200</option>
+								<option value="320,180">(16:9) 320 x 180</option>
+								<option value="480,270">(16:9) 480 x 270</option>
+								<option value="640,360">(16:9) SD/NTSC (640 x 360)</option>
+								<option value="720,480">(16:9) DV/NTSC (720 x 480)</option>
+								<option value="720,480">(16:9) DVD (720 x 480)</option>
+								<option value="1280,720">(16:9) HD 720p (1280 x 720)</option>
+								<option value="1920,1080">(16:9) HD 1080p (1920 x 1080) NOT SUPPORTED</option>
+							</select>
+						</dd>
+
 						<!-- Local Cam FPS -->
 						<dt><label for="local_fps">Local Cam FPS:</label></dt>
 						<dd>
@@ -214,18 +113,6 @@ University of California, Irvine
 						<dd>
 							<input id="local_keyframe" name="local_keyframe" value="30">
 							<button id="local_keyframe_submit" name="local_keyframe_submit" type="button" onclick="set_local_keyframe(document.forms['local_camera']['local_keyframe'].value)">Change</button>
-						</dd>
-						<!-- Local Cam Motion Level -->
-						<dt><label for="local_motion_level">Local Cam Motion Level:</label></dt>
-						<dd>
-							<input id="local_motion_level" name="local_motion_level" value="0">
-							<button id="local_motion_level_submit" name="local_motion_level_submit" type="button" onclick="set_local_motion_level(document.forms['local_camera']['local_motion_level'].value)">Change</button>
-						</dd>
-						<!-- Local Cam Timeout -->
-						<dt><label for="local_timeout">Local Cam Timeout:</label></dt>
-						<dd>
-							<input id="local_timeout" name="local_timeout" value="0">
-							<button id="local_timeout_submit" name="local_timeout_submit" type="button" onclick="set_local_timeout(document.forms['local_camera']['local_timeout'].value)">Change</button>
 						</dd>
 						<!-- Local Mic Rate -->
 						<dt><label for="local_mic_rate">Local Mic Rate:</label></dt>
@@ -242,6 +129,14 @@ University of California, Irvine
 						<dt><label for="local_mic_echo_suppression">Local Mic Echo Suppression?</label></dt>
 						<dd>
 							<input id="local_mic_echo_suppression" name="local_mic_echo_suppression" type="checkbox" onclick="set_local_mic_echo_supression(document.forms['local_camera']['local_mic_echo_suppression'].value)">
+						</dd>
+						<h2>Advanced</h2>
+						<!-- Local Bandwidth is an odd parameter. Why is it associated with only the camera? -->
+						<!-- Local Bandwidth -->
+						<dt><label for="local_bandwidth">Local Bandwidth (bps):</label></dt>
+						<dd>
+							<input id="local_bandwidth" name="local_bandwidth" value="100000">
+							<button id="local_bandwidth_submit" name="local_bandwidth_submit" type="button" onclick="set_local_bandwidth(document.forms['local_camera']['local_bandwidth'].value)">Change</button>
 						</dd>
 						<!-- Local Mic Silence Level -->
 						<dt><label for="local_mic_silence_level">Local Mic Silence Level:</label></dt>
@@ -381,13 +276,3 @@ University of California, Irvine
 				</fieldset>
 			</form>
 			</div>
-			
-			<div id="Ramune"></div>
-			
-			<!-- Debug -->
-			<form id="debug">
-				<textarea id="console" name="console"></textarea>
-			</form>
-
-	</body>
-</html>

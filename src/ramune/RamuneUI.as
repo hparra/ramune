@@ -82,5 +82,11 @@ package ramune
 		public function clearVideo(index:uint):void {
 			videos[index].clear();
 		}
+		
+		
+		// TODO: Temporarily remove all video from canvas
+		public function detachVideos():void {
+			
+		}
 	}
 }	

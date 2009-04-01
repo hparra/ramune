@@ -23,7 +23,6 @@ var jRamune = {
 		$(s).flash({
 			id: 'ramune',
 			swf: path + 'ramune.swf',
-			style: 'z-index: 1;',
 			width: '0',
 			height: '0',
 			params: {
@@ -52,6 +51,12 @@ var jRamune = {
 	},
 	ignoreCall: function() {
 		ramune.ignoreCall();
+	},
+	hide: function() {
+		ramune.hide();
+	},
+	show: function() {
+		ramune.show();
 	},
 	onNetConnectionSuccess: function(farID) {
 		event = jQuery.Event(jRamune.events.NETCONNECTION_SUCCESSFUL);
