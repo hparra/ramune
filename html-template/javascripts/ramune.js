@@ -83,7 +83,7 @@ function cameraCommand(str) {
 			break;
 		
 	}
-	WENDICall("/resources/devices/ptzcamera", VISCA.command(1, subcommand));
+	WENDICall("/devices/ptzcamera", VISCA.command(1, subcommand));
 }
 
 function startFrameApplication() {
@@ -98,7 +98,7 @@ function startFrameApplication() {
  */
 function videoswitchCommand(str) {
 	// TODO: Error checking. [1-F]
-	WENDICall("/resources/devices/videoswitch", "01 8" + str + " 81 81");
+	WENDICall("/devices/videoswitch", "01 8" + str + " 81 81");
 }
 
 function WENDICall(resource, body) {
