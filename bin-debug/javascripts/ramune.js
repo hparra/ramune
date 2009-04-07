@@ -100,6 +100,18 @@ function toggleFrameApplication() {
 	}
 }
 
+local_window_visible = true;
+function toggleLocalView() {
+	if (local_window_visible) {
+		ramune.hideLocal();
+		local_window_visible = false;
+	}
+	else {
+		ramune.showLocal();
+		local_window_visible = true;
+	}
+}
+
 /**
  * Sends command to WENDI Server to switch S-Video Input
  *

@@ -463,6 +463,14 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			this.ui.addVideo(localVideoIndex);
 		}
 		
+		public function showLocal():void {
+			this.ui.addVideo(this.localVideoIndex);
+		}
+		public function hideLocal():void {
+			this.ui.removeVideo(this.localVideoIndex);
+		}
+		
+		
 		private function debug(msg:String):void {
 			trace(msg);
 			//ExternalInterface.call("debug", "[Ramune] " + msg);
