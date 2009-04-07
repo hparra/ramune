@@ -1,6 +1,6 @@
 function trace(msg) {
 	//if (frescolita.use_trace)
-		$.jGrowl(msg);
+		//$.jGrowl(msg);
 }
 
 // TODO: Need to remove listeners after end call
@@ -86,9 +86,18 @@ function cameraCommand(str) {
 	WENDICall("/devices/ptzcamera", VISCA.command(1, subcommand));
 }
 
-function startFrameApplication() {
-	jRamune.hide();
-	$("#placeholder").html("Hi!");
+using_plugin = false;
+function toggleFrameApplication() {
+	if (!using_plugin) {
+		using_plugin = true;
+		$("#plugin").show();
+		ramune.shrink(180, 120);
+	}
+	else {
+		using_plugin = false;
+		$("#plugin").hide();
+		ramune.grow(720, 480);
+	}
 }
 
 /**

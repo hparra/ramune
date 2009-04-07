@@ -41,6 +41,19 @@ package ramune
 			//videos[index].z = z; // FIXME: Unexpected Behavior
 		}
 		
+		public function destroyVideo(index:uint):void {
+			this.removeChild(videos[index]);
+			//delete videos[index];
+		}
+		
+		public function addVideo(index:uint):void {
+			this.addChild(videos[index]);
+		}
+		
+		public function removeVideo(index:uint):void {
+			this.removeChild(videos[index]);
+		}
+		
 		/**
 		 * From doc: "You do not call this method directly. Flex calls the createChildren() method in response to the call to the addChild() method to add the component to its parent."
 		 * 

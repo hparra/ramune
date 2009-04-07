@@ -451,6 +451,18 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		public function show():void {
 			this.setSize(previousWidth, previousHeight);
 		}
+		public function shrink(width:Number, height:Number):void {
+			this.setSize(width, height);
+			this.ui.resizeVideo(remoteVideoIndex, width, height);
+			this.ui.removeVideo(localVideoIndex);
+		}
+		
+		public function grow(width:Number, height:Number):void {
+			this.setSize(width, height);
+			this.ui.resizeVideo(remoteVideoIndex, width, height);
+			this.ui.addVideo(localVideoIndex);
+		}
+		
 		private function debug(msg:String):void {
 			trace(msg);
 			//ExternalInterface.call("debug", "[Ramune] " + msg);
