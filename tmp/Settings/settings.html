@@ -57,10 +57,43 @@
 		dt{
 			padding: 8px;
 		}
+		
+		#save{
+			position: relative;
+			top: 585px;
+			left: 780px;
+			width: 205px;
+		}
 	</style>
 	<script type="text/javascript" src="javascripts/jquery-1.3.2.js" ></script>
 	<script type="text/javascript" src="javascripts/jquery-ui-1.7.1.custom.min.js"></script>
 	<script type="text/javascript" charset="utf-8">
+		var ramuneSettings = {
+			// Presets
+			"presets_select" : "default",
+			
+			// Camera
+			"camera_select" : "default",
+			"resolution" : "640,480",
+			"quality-slide" : 50,
+			"framerate-slide" : 30,
+			
+			"keyframe" : 30,
+			"bandwidth" : 0,
+			
+			// Mic
+			"mic_select" : "default",
+			"encode-quality-slide" : 10,
+			"echo_suppression" : "true",
+			"gain-slide" : 50,
+			
+			"rate_select" : "22kHz",
+			"codec_select" : "NellyMosser",
+			"FPP" : 20,
+			"silence_timeout" : 0,
+			"silence_level" : 0
+		};
+		
 		var testObject = {
 			// Presets
 			"presets_select" : "default",
@@ -68,10 +101,10 @@
 			// Camera
 			"camera_select" : "default",
 			"resolution" : "640,480",
-			"quality-slide" : 100,
+			"quality-slide" : 50,
 			"framerate-slide" : 30,
 			
-			"keyframe" : "current framerate",
+			"keyframe" : 30,
 			"bandwidth" : 0,
 			
 			// Mic
@@ -96,31 +129,76 @@
 
 			$('#add_preset').css({ width: "200px"});
 			$('#delete_preset').css({ width: "200px"});
+			$('#save_settings').css({ width: "100px"});
+			$('#cancel_settings').css({ width: "100px"});
 			
+			
+			// Tabs
+			$('#settings-tabs').tabs();
+			
+			// LOAD PRESETS
 			// Camera Sliders
 			$('#quality-slide').slider({
 				min: 0,
-				max: 100
+				max: 100,
+				value: ramuneSettings["quality-slide"]
 			}).css({ width: formwidth});
 			$('#framerate-slide').slider({
 				min: 0,
-				max: 30
+				max: 30,
+				value: ramuneSettings["framerate-slide"]
 			}).css({ width: formwidth});
 			
 			// Mic Sliders
 			$('#encode-quality-slide').slider({
 				min: 0,
-				max: 10
+				max: 10,
+				value: ramuneSettings["encode-quality-slide"]
 			}).css({ width: formwidth});
 			$('#gain-slide').slider({
 				min: 0,
-				max: 100
+				max: 100,
+				value: ramuneSettings["gain-slide"]
 			}).css({ width: formwidth});
-
-			// Tabs
-			$('#settings-tabs').tabs();
 			
+			// Initialize Keyframe
+			$('#keyframe').attr({
+				disabled: "disabled",
+				value: ramuneSettings["keyframe"] //$('#framerate-slide').slider('value')
+			});
+			
+			//Initialize Bandwidth
+			$('#bandwidth').attr({
+				disabled: "disabled",
+				value: ramuneSettings["bandwidth"]
+			});
+			
+			$('#camera_select').attr({
+				title: ramuneSettings['#camera_select']
+			});
+			
+			$('#resolution').attr({
+				title: ramuneSettings['#resolution']
+			});
 		});
+		
+		function save(){
+			ramuneSettings = testObject;
+			var x = "";
+			for(attr in ramuneSettings){
+				x = x + attr + '=' + ramuneSettings[attr];
+			}
+			$('#test').text("Settings Saved"+x);
+		}
+		
+		function cancel(){
+			testObject = ramuneSettings;
+			var x = "";
+			for(attr in ramuneSettings){
+				x = x + attr + '=' + ramuneSettings[attr];
+			}
+			$('#test').text("Settings Reverted"+x);
+		}
 		
 		function select(id){
 			testObject[id] = $('#'+String(id)).val();
@@ -128,16 +206,42 @@
 			$('#test').text(x);
 		}
 		
-		function checkBox(x){
-			$('#test').text(x);
-			if(!x){
+		function checkBoxKeyframe(checked, id){
+			if(!checked){
+				inputField($('#framerate-slide').slider('value'),"keyframe");
 				$('#keyframe').attr({
-					disabled : "disabled",
-					value: $('#framerate-slide').slider('value')
+					disabled: "disabled",
+					value: testObject["keyframe"]
 				});
 			} else{
 				$('#keyframe').removeAttr("disabled");
 			}
+			
+			testObject[id] = checked;
+			var x = testObject[id];
+			$('#test').text(id+' '+x);
+		}
+		
+		function checkBoxBandwidth(checked, id){
+			if(!checked){
+				inputField(0,"bandwidth");
+				$('#bandwidth').attr({
+					disabled: "disabled",
+					value: testObject["bandwidth"]
+				});
+			} else{
+				$('#bandwidth').removeAttr("disabled");
+			}
+			
+			testObject[id] = checked;
+			var x = testObject[id];
+			$('#test').text(id+' '+x);
+		}
+		
+		function inputField(value, id){
+			testObject[id] = value;
+			var x = testObject[id];
+			$('#test').text(id+' '+x);
 		}
 	</script>
 </head>
@@ -146,6 +250,10 @@
 <div id="test">TEST BLOCK</div>
 
 <div id="box">
+	<div id="save">
+		<input type="button" value="SAVE" id="save_settings" onClick="save()">
+		<input type="button" value="CANCEL" id="cancel_settings" onClick="cancel()">
+	</div>
 	<div id="settings-tabs">
 		<div id="presets">
 			<h4>
@@ -236,16 +344,16 @@
 				<legend>Advanced Camera Settings:</legend>
 				<dl>
 					<dt>
-						Keyframe: <input type="checkbox" id="enable_keyframe" onchange="checkBox(this.checked)">
+						Keyframe: <input type="checkbox" id="enable_keyframe" onchange="checkBoxKeyframe(this.checked, this.id)">
 					</dt>
 					<dd>
-						<input type="text" id="keyframe"> 
+						<input type="text" id="keyframe" onchange="inputField(this.value, this.id)"> 
 					</dd>
 					<dt>
-						Bandwidth: <input type="checkbox" id="enable_bandwidth">
+						Bandwidth: <input type="checkbox" id="enable_bandwidth" onchange="checkBoxBandwidth(this.checked, this.id)">
 					</dt>
 					<dd>
-						<input type="text" id="bandwidth"> 
+						<input type="text" id="bandwidth" onchange="inputField(this.value, this.id)"> 
 					</dd>
 				</dl>
 			</fieldset>
@@ -329,19 +437,19 @@
 						Frames per Packet: <input type="checkbox" id="enable_FPP">
 					</dt>
 					<dd>
-						<input type="text" id="FPP">
+						<input type="text" id="FPP" onchange="inputField(this.value, this.id)">
 					</dd>
 					<dt>
 						Silence Timeout: <input type="checkbox" id="enable_silence_timeout">
 					</dt>
 					<dd>
-						<input type="text" id="silence_timeout">
+						<input type="text" id="silence_timeout" onchange="inputField(this.value, this.id)">
 					</dd>
 					<dt>
 						Silence Level: <input type="checkbox" id="enable_silence_level">
 					</dt>
 					<dd>
-						<input type="text" id="silence_level">
+						<input type="text" id="silence_level" onchange="inputField(this.value, this.id)">
 					</dd>
 				</dl>
 			</fieldset>	
