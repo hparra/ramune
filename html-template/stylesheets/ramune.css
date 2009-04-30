@@ -3,12 +3,12 @@
 body {
 	font-family: Arial;
 	color: white;
-	background-color: black;
+	/*background-color: black;*/
 	margin: 0px;
 	padding: 0px;
 	width: 100%;
 	height: 100%;
-	background-image: url('../images/beach.jpg'); /* FIXME: Set background-image through JS */
+	/*background-image: url('../images/beach.jpg');*/ /* FIXME: Set background-image through JS */
 }
 
 h1 {

@@ -141,10 +141,10 @@
 		}
 		
 		
-		$('document').ready(function(){
-			initializeSettingsView();
-		});
-		
+
+		/**
+		 * Saves Settings
+		 */
 		function save(){
 			ramuneSettings = testObject;
 			var x = "";
@@ -154,6 +154,10 @@
 			$('#test').text("Settings Saved"+x);
 		}
 		
+		
+		/**
+		 *
+		 */
 		function cancel(){
 			testObject = ramuneSettings;
 			var x = "";
@@ -163,12 +167,18 @@
 			$('#test').text("Settings Reverted"+x);
 		}
 		
+		/**
+		 *
+		 */
 		function select(id){
 			testObject[id] = $('#'+String(id)).val();
 			var x = testObject[id];
 			$('#test').text(x);
 		}
 		
+		/**
+		 *
+		 */
 		function checkBoxKeyframe(checked, id){
 			if(!checked){
 				inputField($('#framerate-slide').slider('value'),"keyframe");
@@ -185,6 +195,9 @@
 			$('#test').text(id+' '+x);
 		}
 		
+		/**
+		 *
+		 */
 		function checkBoxBandwidth(checked, id){
 			if(!checked){
 				inputField(0,"bandwidth");
@@ -201,11 +214,20 @@
 			$('#test').text(id+' '+x);
 		}
 		
+		/**
+		 *
+		 */ 
 		function inputField(value, id){
 			testObject[id] = value;
 			var x = testObject[id];
 			$('#test').text(id+' '+x);
 		}
+		
+		
+		//
+		$('document').ready(function(){
+			initializeSettingsView();
+		});		
 	</script>
 </head>
 

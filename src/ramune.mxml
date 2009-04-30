@@ -10,8 +10,6 @@ Created by Hector Guillermo Parra, hector@hectorparra.com
 California Institute for Telecommunications and Information Technology
 University of California, Irvine
 
-Based on design by Jozsef Vass, Adobe Systems Incorporated
-
 -->
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:ramune="ramune.*"
@@ -30,18 +28,17 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 	<mx:Script>
 	<![CDATA[
 		import mx.controls.Alert;
-	
-		private const SERVER_URI:String = "rtmfp://stratus.adobe.com/957c10737240a05c0143ce7f-b33403f49938";
+		
+		private var STRATUS_URL:String = "rtmfp://stratus.adobe.com/957c10737240a05c0143ce7f-b33403f49938";
+		
+		private var settings:SharedObject;
 		private var netConnection:NetConnection;
 		private var listenerStream:NetStream;		// listens for incoming call
 		private var controlStream:NetStream;		// caller's incoming to callee's listener
 		private var outgoingStream:NetStream;
 		private var incomingStream:NetStream;
-		[Bindable] private var loginState:int;		// TODO: Reevaluate use
-		private const LOGIN_NOT_CONNECTED:int = 0;
-		private const LOGIN_CONNECTING:int = 1;
-		private const LOGIN_CONNECTED:int = 2;
-		private const LOGIN_DISCONNECTING:int = 3;
+
+		// Ramune State Machine
 		private var callState:String;
 		private const CALL_NOT_READY:String = "RamuneCallNotReady";
 		private const CALL_READY:String = "RamuneCallReady";
@@ -49,6 +46,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		private const CALL_RINGING:String = "RamuneCallRinging";
 		private const CALL_ESTABLISHED:String = "RamuneCallEstablished";
 		private const CALL_FAILED:String = "RamuneCallFailed";
+
 		private var cams:Array;
 		private var mics:Array;
 		private var default_cam_index:int;
@@ -61,6 +59,26 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 
 		private var previousWidth:uint;
 		private var previousHeight:uint;
+		
+		// FIXME: Extracted from old version. Clean up.
+		/**
+		 * There are three sets of parameter sources.
+		 * Order of precedence:
+		 * - URL query string
+		 * - FlashVars
+		 * - Program Hash (Object)
+		 */
+		[Bindable]
+		protected var params:Object = {
+			serverURI: STRATUS_URL,
+			width: 640,
+			height: 480,
+			bandwidth: 0,
+			quality: 95,
+			fps: 25,
+			keyFrameInterval: 25,
+			localScale: 0.25
+		};
 		
 		/*
 		 * Uber Methods
@@ -81,9 +99,10 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			this.doubleClickEnabled = true;
 		 	this.verticalScrollPolicy = "off";
 			this.horizontalScrollPolicy = "off";
+			this.parseParams();
 		}
 		private function onApplicationComplete():void {
-			changeCallState(CALL_NOT_READY);
+			this.changeCallState(CALL_NOT_READY);
 			
 			debug("Player: " + Capabilities.version);
 
@@ -95,13 +114,13 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			// TODO: These have a tendency not to work!
 			//ExternalInterface.addCallback("placeCall", placeCall);
 			//ExternalInterface.addCallback("acceptCall", acceptCall);
-			//ExternalInterface.addCallback("endCall", endCall);
-			
-			loginState = LOGIN_NOT_CONNECTED;
+			//ExternalInterface.addCallback("endCall", endCall); 
 			
 			initializeCams();
 			initializeMics();
-			setSize(0, 0);
+			//initializeSettings(); // TODO: Finish
+			
+			this.setSize(0, 0);
         }
         private function changeCallState(state:String):void {
         	switch (state) {
@@ -123,7 +142,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
         public function connect():void {
         	netConnection = new NetConnection();
         	netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnectionHandler);
-        	netConnection.connect(SERVER_URI);
+        	netConnection.connect(params.serverURI);
         }
     	private function netConnectionHandler(event:NetStatusEvent):void
 		{
@@ -141,7 +160,6 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
                 	break;
                 	
                 case "NetConnection.Connect.Closed": // TODO: jRamune.onNetConnectionClosed
-                	loginState = LOGIN_NOT_CONNECTED;
                 	changeCallState(CALL_NOT_READY);
                 	break;
                 	
@@ -152,7 +170,6 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
                 	
                 case "NetConnection.Connect.Failed":
                 	debug("Unable to connect to " + netConnection.uri);
-                	loginState = LOGIN_NOT_CONNECTED;
                 	break;
                 	
                 case "NetStream.Connect.Closed":
@@ -285,7 +302,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
         		changeCallState(CALL_ESTABLISHED);
 				debug("Call accepted by " + callee);
 
-				setSize(720, 480);
+				setSize(params.width, params.height);
 				setLocalVideo();
 				outgoingStream.attachCamera(cams[default_cam_index]);
 				outgoingStream.attachAudio(mics[default_mic_index]);
@@ -302,15 +319,15 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		}
 		private function setLocalVideo():void {
 			if (localVideoIndex < 0)
-				localVideoIndex = ui.newVideo(720, 480, 20, 20, 0);
+				localVideoIndex = ui.newVideo(params.width, params.height, 20, 20, 0);
 			ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
-			ui.resizeVideo(localVideoIndex, 180, 120);
+			ui.resizeVideo(localVideoIndex, 160, 120);
 		}
 		private function setRemoteVideo():void {
 			if (remoteVideoIndex < 0)
-				remoteVideoIndex = ui.newVideo(720, 480, 0, 0, 0);
+				remoteVideoIndex = ui.newVideo(params.width, params.height, 0, 0, 0);
 			ui.attachNetStreamToVideo(incomingStream, remoteVideoIndex);
-			ui.resizeVideo(remoteVideoIndex, 720, 480);
+			ui.resizeVideo(remoteVideoIndex, params.width, params.height);
 		}
 		public function acceptCall():void {
 			// FIXME: it shouldn't do any of this unless it's on the right state
@@ -318,7 +335,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 			incomingStream.receiveAudio(true);
 			incomingStream.receiveVideo(true);
 			
-			setSize(720, 480); // Unhide
+			setSize(params.width, params.height); // Unhide
 			setRemoteVideo();
 
 			// callee publishes media
@@ -404,8 +421,8 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				for (var i:uint = 0; i < Camera.names.length; ++i) {
 					debug("Found Camera " + i + ": " + Camera.names[i]);
 					cams.push(Camera.getCamera(i.toString()));
-					cams[i].setQuality(0, 85);
-					cams[i].setMode(720, 480, 25);
+					cams[i].setQuality(params.bandwidth, params.quality);
+					cams[i].setMode(params.width, params.height, params.fps);
 					cams[i].setKeyFrameInterval(25);
 				}
 				default_cam_index = Camera.getCamera(null).index;
@@ -436,6 +453,50 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				mics = null;
 				debug("No Microphones found!");
 			}
+		}
+		public function initializeSettings():void {
+			settings = SharedObject.getLocal("RamuneSettings");
+
+			// Presets do NOT exist
+			if (!settings.data.hadOwnProperty("Automatic")) {
+				debug("Ramune Settings do not exist. Creating...");
+								
+				var automatic:Object = {
+					name: "Automatic",
+					camera: "Automatic",
+					microphone: "Automatic"
+				};
+
+				settings.data.presets = new Array();
+				settings.data.presets.push(automatic);
+			}
+			else { // Presets DO exist
+				debug("Ramune Settings do exist.");
+			}
+			
+			readSettings();
+		}
+		public function readSettings():void {
+			
+			if ("Automatic") { // FIXME: Implement
+				if (cams != null) {
+					if (Capabilities.os.search("Mac") != -1)
+						default_cam_index = findCameraIndexByName("USB Video Class Video");
+					else
+						default_cam_index = Camera.getCamera(null).index;
+				}
+				if (mics != null) {
+					default_mic_index = Microphone.getMicrophone(-1).index;
+				}
+			}
+
+		}
+		public function findCameraIndexByName(name:String):int {
+			if (name != null)
+				for (var i:int = 0; i < this.cams.length; ++i)
+					if (cams[i].name == name)
+						return i;
+			return -1;
 		}
 		public function setSize(width:Number, height:Number):void {	
 			previousWidth = this.width;
@@ -473,7 +534,7 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 		
 		private function debug(msg:String):void {
 			trace(msg);
-			//ExternalInterface.call("debug", "[Ramune] " + msg);
+			ExternalInterface.call("console.log", "[Ramune] " + msg);
 		}
 		private function onDoubleClick():void {
 			// TODO: abstract as setFullScreen()
@@ -496,6 +557,17 @@ Based on design by Jozsef Vass, Adobe Systems Incorporated
 				debug("Caught SecurityError!");
 			}
 		}
+
+		// FIXME: Should be in it's on file/lib
+	    protected function parseParams():void {
+	    	var swf_params:Object = Application.application.parameters;
+	   		for (var key:* in params) {
+	        	if (swf_params[key] != null && swf_params[key] != "") {
+	        		debug("Parameter: " + key.toString() + " => " + swf_params[key]);
+	        		params[key] = swf_params[key];
+	        	}
+	        }
+	    }
 	]]>
 	</mx:Script>
 	<ramune:RamuneUI id="ui" width="100%" height="100%"/>

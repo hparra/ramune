@@ -1,3 +1,16 @@
+var presets = {
+	0: {
+		
+	},
+	1: {
+		
+	}
+	2: {
+		
+	}
+}
+
+
 var ramuneSettings = {
 	// Presets
 	"presets_select" : "default",

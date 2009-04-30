@@ -15,22 +15,20 @@ University of California, Irvine
 		<link rel="stylesheet" type="text/css" href="stylesheets/ramune.css" />
 		<link rel="stylesheet" type="text/css" href="stylesheets/ramune.login.css" />
 		<link rel="stylesheet" type="text/css" href="stylesheets/jquery.jgrowl.css" />
-		<link rel="stylesheet" type="text/css" href="stylesheets/mbContainer.css" />
+		
 		<script type="text/javascript" src="javascripts/FABridge.js"></script>
 		<script type="text/javascript" src="javascripts/jquery-1.3.2.js"></script>
 		<script type="text/javascript" src="javascripts/jquery.ui.all.js"></script>
 		<script type="text/javascript" src="javascripts/jquery.swfobject.js"></script>
 		<script type="text/javascript" src="javascripts/jquery.dom-builder.js"></script>
 		<script type="text/javascript" src="javascripts/jquery.jgrowl.js"></script>
-		<script type="text/javascript" src="javascripts/jquery.corners.js"></script>
+
 		<script type="text/javascript" src="javascripts/jquery.blockUI.js"></script>
 		<script type="text/javascript" src="javascripts/jquery.getUrlParam.js"></script>
 		<script type="text/javascript" src="javascripts/jRamune.js"></script>
 		<script type="text/javascript" src="javascripts/ramune.js"></script>
 		<script type="text/javascript" src="javascripts/hexify.js"></script>
 		<script type="text/javascript" src="javascripts/VISCA.js"></script>
-		<script type="text/javascript" src="javascripts/mbContainer.min.js"></script>
-		
 		
 		<style>
 		</style>
@@ -92,7 +90,7 @@ University of California, Irvine
 
 						break;
 					case "NetConnection.Connect.Closed": // NOTE: I think this is what's going wrong...
-						fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, password, "0");
+						//fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, password, "0");
 						break;
 					case "NetConnection.Connect.Failed": // Bad Password?
 						trace("REJECTED");
@@ -100,14 +98,18 @@ University of California, Irvine
 						break;
 				}
 			});
-			fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, password, "0"); // TODO: Passkey for RamuneTest
+			//fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, password, "0"); // TODO: Passkey for RamuneTest
+			
+			userServerURI = $(document).getUrlParam("userServerURI");
+			if (userServerURI == null)
+				userServerURI = "rtmp://hbox.calit2.uci.edu/RamuneTest";
+			fms.connect(userServerURI, username, password, "0");
 			// password = null; // NOTE: Bad, but we want to allow graceful reconnect
 		}
 		
 		// TODO: Integrate into frescolita
 		$(document).ready(function() {
 		
-			$(".container").buildContainers();
 			$("#plugin").hide();
 		
 			// Don't use blockUI defaults
@@ -199,7 +201,10 @@ University of California, Irvine
 			FABridge.addInitializationCallback("Ramune", onFABridgeInitialized);
 			
 			/* Initialize */
-			jRamune.initialize("#ramunex", "", { bridgeName: "Ramune" });
+			jRamune.initialize("#ramunex", "", {
+				bridgeName: "Ramune",
+				serverURI: $(document).getUrlParam("serverURI")
+			});
 		}
 		
 		function showRamuneSettings() {
@@ -308,13 +313,13 @@ University of California, Irvine
 
 		<!-- jRamune.states.CALL_ESTABLISHED -->
 		<div id="RamuneCallEstablished"><!-- NOTE: UI Only -->
-			<div id="placeholder" style="width:720;height:480;float:left;">
+			<div id="placeholder" style="width:640;height:480;float:left;">
 				<!-- Generated Content -->
 			</div>
 			<div id="controls">
 				<a onclick="jRamune.endCall()" id="end_call_button" class="button red_button width_192" href="#">Hang Up</a>
-				<a onclick="showRamuneSettings()" id="settings_button" class="button green_button width_192 top_space" href="#">Settings</a>
-				<div id="pantilt_control" class="top_space">
+				<!--a onclick="showRamuneSettings()" id="settings_button" class="button green_button width_192 top_space" href="#">Settings</a-->
+				<!--div id="pantilt_control" class="top_space">
 					<a onmousedown="cameraCommand('MOVE_UP')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_up" class="ptz_button" href="#"><img src="images/1uparrow-256.png" /></a>
 					<a onmousedown="cameraCommand('MOVE_LEFT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_left" class="ptz_button" href="#"><img src="images/1leftarrow-256.png" /></a>
 					<a onclick="cameraCommand('MOVE_STOP')" id="ptz_button_stop" class="ptz_button" href="#"><img src="images/cnrdelete-all-256.png" /></a>
@@ -324,18 +329,17 @@ University of California, Irvine
 				<div id="zoom_control" class="top_space">
 					<a onmousedown="cameraCommand('ZOOM_IN')" onmouseup="cameraCommand('ZOOM_STOP')" id="zoom_in_button" class="ptz_button" href="#"><img src="images/viewmag+-256.png" /></a>
 					<a onmousedown="cameraCommand('ZOOM_OUT')" onmouseup="cameraCommand('ZOOM_STOP')" id="zoom_out_button" class="ptz_button" href="#"><img src="images/viewmag--256.png" /></a>
-				</div>	
+				</div-->	
 				<div id="ui_control" class="top_space">
 					<a onclick="toggleLocalView()" class="source" href="#"><img src="images/agt_member-256.png" /></a>
 				</div>
 			</div>
-			<div id="sources"><!-- TODO: Rename me -->
-				<a onclick="toggleFrameApplication()" class="source" href="#"><img src="images/bookmark_folder-256.png" /></a>
+			<!--div id="sources">
 				<a onclick="videoswitchCommand(1)" class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
 				<a onclick="videoswitchCommand(2)" class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
 				<a onclick="" class="source" href="#"><img src="images/mic_256x256.png" /></a>
 				<a onclick="" class="source" href="#"><img src="images/OhDoctorPNG/StethoRouge256.png" /></a>
-			</div>
+			</div-->
 		</div>
 		<div id="ramunex"></div><!-- NOTE: Actual SWF. Must 'display: block' at all times -->
 
@@ -343,28 +347,6 @@ University of California, Irvine
 		<div id="RamuneCallFailed">
 			<span class="call_desc">Not Available</span>
 			<a class="button red_button" href="#" onclick="jRamune.endCall()">Hang Up</a>
-		</div>
-		
-		<div id="plugin" class="container stiky draggable resizable" style="width:800px; height:600;top:20px;right:20px;overflow:hidden;" icon="comment-edit-48x48.png" buttons="i,m,c">
-			<table cellpadding="0" cellspacing="0" class="containerTable">
-				<tr class="top">
-					<td class="no"> </td>
-					<td class="n"><a href="">Presentation</a></td>
-					<td class="ne">&nbsp;</td>
-				</tr>
-				<tr class="middle">
-					<td class="o"> </td>
-					<td class="c" >
-						<iframe style="width:100%;height:100%;" src="http://libachman.calit2.uci.edu/~hparra/fanta/"></iframe>
-					</td>
-					<td class="e"> </td>
-				</tr>
-				<tr class="bottom">
-					<td class="so"> </td>
-					<td class="s"></td>
-					<td class="se"> </td>
-				</tr>
-			</table>
 		</div>
 		
 	</body>
