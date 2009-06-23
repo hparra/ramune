@@ -17,23 +17,23 @@ University of California, Irvine
 		<link rel="stylesheet" type="text/css" href="stylesheets/jquery.jgrowl.css" />
 		
 		<script type="text/javascript" src="javascripts/FABridge.js"></script>
-		<script type="text/javascript" src="javascripts/jquery-1.3.2.js"></script>
-		<script type="text/javascript" src="javascripts/jquery.ui.all.js"></script>
-		<script type="text/javascript" src="javascripts/jquery.swfobject.js"></script>
-		<script type="text/javascript" src="javascripts/jquery.dom-builder.js"></script>
-		<script type="text/javascript" src="javascripts/jquery.jgrowl.js"></script>
 
-		<script type="text/javascript" src="javascripts/jquery.blockUI.js"></script>
-		<script type="text/javascript" src="javascripts/jquery.getUrlParam.js"></script>
+		<script type="text/javascript" src="javascripts/jquery/jquery-1.3.2.js"></script>
+		<script type="text/javascript" src="javascripts/jquery/jquery.ui.all.js"></script>
+		<script type="text/javascript" src="javascripts/jquery/jquery.swfobject.js"></script>
+		<script type="text/javascript" src="javascripts/jquery/jquery.dom-builder.js"></script>
+		<script type="text/javascript" src="javascripts/jquery/jquery.jgrowl.js"></script>
+		<script type="text/javascript" src="javascripts/jquery/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="javascripts/jquery/jquery.getUrlParam.js"></script>
+
 		<script type="text/javascript" src="javascripts/jRamune.js"></script>
 		<script type="text/javascript" src="javascripts/ramune.js"></script>
 		<script type="text/javascript" src="javascripts/hexify.js"></script>
 		<script type="text/javascript" src="javascripts/VISCA.js"></script>
 		
-		<style>
-		</style>
-		<script type="text/javascript">
 
+		<script type="text/javascript">
+	
 		var ramune;
 		var username;
 		var password; // FIXME: Bad!
@@ -102,7 +102,7 @@ University of California, Irvine
 			
 			userServerURI = $(document).getUrlParam("userServerURI");
 			if (userServerURI == null)
-				userServerURI = "rtmp://hbox.calit2.uci.edu/RamuneTest";
+				userServerURI = "	";
 			fms.connect(userServerURI, username, password, "0");
 			// password = null; // NOTE: Bad, but we want to allow graceful reconnect
 		}

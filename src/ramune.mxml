@@ -121,6 +121,8 @@ University of California, Irvine
 			//initializeSettings(); // TODO: Finish
 			
 			this.setSize(0, 0);
+			
+			//ExternalInterface.call(id + "")
         }
         private function changeCallState(state:String):void {
         	switch (state) {
