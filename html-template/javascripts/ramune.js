@@ -2,7 +2,7 @@ function trace(msg) {
 	//if (frescolita.use_trace)
 		//$.jGrowl(msg);
 	//if (console)
-	//	console.log(msg);
+		console.log(msg);
 }
 
 // TODO: Need to remove listeners after end call

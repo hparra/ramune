@@ -123,6 +123,7 @@ University of California, Irvine
 			this.setSize(0, 0);
 			
 			//ExternalInterface.call(id + "")
+			debug("ApplicationComplete");
         }
         private function changeCallState(state:String):void {
         	switch (state) {
@@ -536,7 +537,7 @@ University of California, Irvine
 		
 		private function debug(msg:String):void {
 			trace(msg);
-			ExternalInterface.call("console.log", "[Ramune] " + msg);
+			ExternalInterface.call("console.log", "[RamuneSWF] " + msg);
 		}
 		private function onDoubleClick():void {
 			// TODO: abstract as setFullScreen()

@@ -1,5 +1,7 @@
 <!--
 
+Ramune.html
+
 Copyright ¬© 2008 The Regents of the University of California
 All Rights Reserved
 
@@ -33,7 +35,7 @@ University of California, Irvine
 		
 
 		<script type="text/javascript">
-	
+
 		var ramune;
 		var username;
 		var password; // FIXME: Bad!
@@ -49,8 +51,10 @@ University of California, Irvine
 		
 		function onFABridgeInitialized() {
 			trace("FABridge Initialized");
+			
 			ramune = FABridge.Ramune.root();
 			fms = ramune.newNetConnection();
+			
 			fms.addEventListener("netStatus", function(event) {
 				trace(event.getInfo().code);
 				switch (event.getInfo().code) {
@@ -102,7 +106,7 @@ University of California, Irvine
 			
 			userServerURI = $(document).getUrlParam("userServerURI");
 			if (userServerURI == null)
-				userServerURI = "	";
+				userServerURI = "rtmp://hbox.calit2.uci.edu/RamuneTest";
 			fms.connect(userServerURI, username, password, "0");
 			// password = null; // NOTE: Bad, but we want to allow graceful reconnect
 		}
