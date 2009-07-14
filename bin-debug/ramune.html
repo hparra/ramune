@@ -18,7 +18,7 @@ University of California, Irvine
 		<link rel="stylesheet" type="text/css" href="stylesheets/ramune.login.css" />
 		<link rel="stylesheet" type="text/css" href="stylesheets/jquery.jgrowl.css" />
 		
-		<script type="text/javascript" src="javascripts/FABridge.js"></script>
+		
 
 		<script type="text/javascript" src="javascripts/jquery/jquery-1.3.2.js"></script>
 		<script type="text/javascript" src="javascripts/jquery/jquery.ui.all.js"></script>
@@ -28,330 +28,27 @@ University of California, Irvine
 		<script type="text/javascript" src="javascripts/jquery/jquery.blockUI.js"></script>
 		<script type="text/javascript" src="javascripts/jquery/jquery.getUrlParam.js"></script>
 
-		<script type="text/javascript" src="javascripts/jRamune.js"></script>
+		<!--script type="text/javascript" src="javascripts/jRamune.js"></script-->
+		<script type="text/javascript" src="javascripts/FABridge.js"></script>
+		<script type="text/javascript" src="javascripts/ramune/Ramune.js"></script>
+
+
 		<script type="text/javascript" src="javascripts/ramune.js"></script>
 		<script type="text/javascript" src="javascripts/hexify.js"></script>
 		<script type="text/javascript" src="javascripts/VISCA.js"></script>
 		
 
 		<script type="text/javascript">
-
-		var ramune;
-		var username;
-		var password; // FIXME: Bad!
-
-		var friends; /* RemoteSharedObject */
-		var me; /* RemoteShared Object Data[username] */
-		
-		function getUsername(nearID) {
-			for (i in friends)
-				if (friends.getData()[i].nearID == nearID)
-					return friends.getData()[i].username;
-		}
-		
-		function onFABridgeInitialized() {
-			trace("FABridge Initialized");
-			
-			ramune = FABridge.Ramune.root();
-			fms = ramune.newNetConnection();
-			
-			fms.addEventListener("netStatus", function(event) {
-				trace(event.getInfo().code);
-				switch (event.getInfo().code) {
-					case "NetConnection.Connect.Success" :
-						trace("Connected to FMS: " + fms.getUri());
-						
-						friends = ramune.getRemoteSharedObject("clients", fms.getUri());
-						friends.addEventListener("sync", function(sync_event) {
-							trace("Friends Synced");
-
-							me = friends.getData()[username];
-							
-							// TODO: Make it's own function
-							$("#friends").html("");
-							for (i in friends.getData()) {
-								// TODO: [HACK] if they don't have an id they are not available
-								// TODO: [HACK] Don't include yourself
-								if (i != me.username && friends.getData()[i].nearID != "0") {
-									$$('div.friend.friend_spacer',
-										$$('div.friend_photo', $$('img', {src: "images/blank_face.gif", id: i})),
-										$$('div.friend_name', i),
-										{
-											id: friends.getData()[i].nearID
-											 }
-									).appendTo('#friends').bind("click", function() {
-										/* Next State */
-										
-										ramune.placeCall('test', this.id);
-									});
-								}
-							}
-							
-						});
-						friends.connect(fms);
-
-						jRamune.connect();
-
-						break;
-					case "NetConnection.Connect.Closed": // NOTE: I think this is what's going wrong...
-						//fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, password, "0");
-						break;
-					case "NetConnection.Connect.Failed": // Bad Password?
-						trace("REJECTED");
-						window.location.href = "/";
-						break;
-				}
+			$(document).ready(function() {
+				
+				Ramune.addEventListener(Ramune.INITIALIZED, function() {
+					Ramune.resize(640, 480);
+					Ramune.connect();
+				});
+				Ramune.initialize();
+				
 			});
-			//fms.connect("rtmp://hbox.calit2.uci.edu/RamuneTest", username, password, "0"); // TODO: Passkey for RamuneTest
-			
-			userServerURI = $(document).getUrlParam("userServerURI");
-			if (userServerURI == null)
-				userServerURI = "rtmp://hbox.calit2.uci.edu/RamuneTest";
-			fms.connect(userServerURI, username, password, "0");
-			// password = null; // NOTE: Bad, but we want to allow graceful reconnect
-		}
-		
-		// TODO: Integrate into frescolita
-		$(document).ready(function() {
-		
-			$("#plugin").hide();
-		
-			// Don't use blockUI defaults
-			$.blockUI.defaults.css = {};
-			$.blockUI.defaults.overlayCSS.opacity = '0.8'; 
-			
-			// Hide Ramune States
-			for (i in jRamune.states)
-				$('#' + jRamune.states[i]).hide();
-			$("#RamuneCallNotReady").show();
-
-			username = $(document).getUrlParam("username");
-			if (!username)
-				username = "TESTING";
-			password = "insomnia"; // FIXME: Hardcoded for now
-			initializeRamune();
-		});
-		
-
-		function hideAllStates() {
-			for (i in jRamune.states)
-				$('#' + jRamune.states[i]).hide();
-		}
-		
-		// TODO: Abstract as initializeBindings
-		/* CONTROLLER */
-		function initializeRamune() {
-		
-			/* STATE_CHANGED */
-			$("#ramunex").bind(jRamune.events.STATE_CHANGED, function(e) {
-				trace(e.state);
-				switch (e.state) {
-	        		case jRamune.states.CALL_NOT_READY:
-	        			hideAllStates();
-	        			$("#RamuneCallNotReady").show();
-	        			break;
-	        		case jRamune.states.CALL_READY:
-	        			$.unblockUI();
-	        			hideAllStates();
-	        			$("#RamuneCallReady").show();
-	        			break;
-	        		case jRamune.states.CALL_CALLING:
-	        			// Should be on CALL_READY
-	        			// hideAllStates();
-	        			//$("#RamuneCallCalling").show();
-	        			$.blockUI({
-	        				message: $("#RamuneCallCalling")
-	        			});
-	        			break;
-	        		case jRamune.states.CALL_RINGING:
-	        			$.blockUI({
-	        				message: $("#RamuneCallRinging")
-	        			});
-	        			break;
-	        		case jRamune.states.CALL_ESTABLISHED:
-	        			$.unblockUI();
-	        			hideAllStates();
-	        			$("#RamuneCallEstablished").show();
-	        			break;
-	        		case jRamune.states.CALL_FAILED:
-						$.blockUI({
-	        				message: $("#RamuneCallFailed")
-	        			});
-	        			break;
-	        		default:
-	        			// TODO: Unknown State Exception
-	        			break;
-	        	}
-			});
-			
-			/* RESIZE */
-			$("#ramunex").bind(jRamune.events.RESIZE, function(e) {
-				// FIXME: we never want people to access div#ramune directly
-				$("#ramune").css("width", e.width);
-				$("#ramune").css("height", e.height);
-			});
-			
-			/* NETCONNECTION_SUCCESSFUL */
-			$("#ramunex").bind(jRamune.events.NETCONNECTION_SUCCESSFUL, function(e) {
-				trace(e.farID);
-				// TODO: abstract
-				me.nearID = e.farID;
-				friends.setProperty(username, me);
-				friends.setDirty(username);
-			});
-			
-			// TODO: Remove
-			/* FABridge */
-			FABridge.addInitializationCallback("Ramune", onFABridgeInitialized);
-			
-			/* Initialize */
-			jRamune.initialize("#ramunex", "", {
-				bridgeName: "Ramune",
-				serverURI: $(document).getUrlParam("serverURI")
-			});
-		}
-		
-		function showRamuneSettings() {
-			$.blockUI({
-	        	message: $("#RamuneSettings")
-	    	});
-		}
-		function hideRamuneSettings() {
-			$.unblockUI(); // FIXME: Do you see where this can be super buggy?
-		}
 		</script>
-	</head>
-	<body scroll="no"><!-- TODO: Research this tag option. Valid HTML? -->
-		
-		<!-- non-jRamune starting state -->
-		<!--
-		<div id="Login">
-			<div id="login_box">
-				<div id="items">
-					<fieldset>
-						<dl>
-							<dt><label id="for_login" for="login">Name</label></dt>
-							<dd><input id="login" name="login" type="text" /></dd>
-							<dt><label id="for_password" for="password">Passphrase</label></dt>
-							<dd><input id="password" name="password" type="password" /></dd>
-							<dt><a id="login_button" href="#" onclick="loggingin();">Login</a></dt>
-						</dl>
-					</fieldset>
-				</div>
-			</div>
-		</div>
-		-->
-		
-		<!-- NOTE: This is tricky, because design will depend on WMODE -->
-		<!-- jRamune psuedo state for settings modal -->
-		<div id="RamuneSettings">
-			<h1>Ramune Settings</h1>
-			<p>This is not meant to be user friendly yet!</p>
-			<a onclick="hideRamuneSettings()" href="#">Close Settings</a>
-			<div id="RamuneCamSettings">
-				<h2>Camera Settings</h2>
-			</div>
-			<div id ="RamuneMicSettings">
-				<h2>Microphone Settings</h2>
-			</div>
-		</div>
-		
-		<!-- jRamune.states.CALL_NOT_READY -->
-		<div id="RamuneCallNotReady">
-			<h1>Please Wait...</h1>
-			<h2>If you are stuck at this message it may be because:</h2>
-			<ul>
-				<li>You used the wrong password. <a href="ramune.html">Go back to login</a>.</li>
-				<li>You didn't provide a username. <a href="ramune.html">Go back to login</a>.</li>
-				<li>You're using Internet Explorer, which is not supported. <a href="http://www.mozilla.com/en-US/firefox/">Install Firefox</a>.</li>
-				<li>You don't have Flash Player 10. <a href="http://get.adobe.com/flashplayer/">Install Flash Player 10</a>.</li>
-			</ul>
-			<p>If you are still having problems please contact <a href="mailto:hparra@calit2.uci.edu">hparra@calit2.uci.edu</a>.</p>
-		</div>
-
-		<!-- jRamune.states.CALL_READY -->
-		<div id="RamuneCallReady">
-			<h1>Friends</h1>
-			<div id="friends">
-				<!-- 
-				<div class="friend" id="friend.nearID">
-					<div class="friend_photo">
-						<img src="friend.photo">
-					</div>
-					<div class="friend_name">
-						friend.name
-					</div>
-				</div>
-				-->
-			</div>
-		</div>
-
-		<!-- jRamune.states.CALL_CALLING -->
-		<div id="RamuneCallCalling">
-			<span class="call_desc">Calling</span>
-			<div class="friend">
-				<div class="friend_photo">
-					<img src="images/blank_face.gif" /><!-- default -->
-				</div>
-				<div class="friend_name">
-					Unknown<!-- default -->
-				</div>
-			</div>
-			<a class="button red_button flow_width top_space" href="#" onclick="jRamune.endCall()">Hang Up</a>
-		</div>
-
-		<!-- jRamune.states.CALL_RINGING -->
-		<div id="RamuneCallRinging">
-			<span class="call_desc">Call from</span>
-			<div class="friend">
-				<div class="friend_photo">
-					<img src="images/blank_face.gif" /><!-- default -->
-				</div>
-				<div class="friend_name">
-					Unknown<!-- default -->
-				</div>
-			</div>
-			<a class="button green_button flow_width top_space" onclick="jRamune.acceptCall()" href="#">Pick Up</a>
-			<a class="button red_button flow_width top_space" onclick="jRamune.ignoreCall()" href="#">Ignore</a>
-		</div>
-
-		<!-- jRamune.states.CALL_ESTABLISHED -->
-		<div id="RamuneCallEstablished"><!-- NOTE: UI Only -->
-			<div id="placeholder" style="width:640;height:480;float:left;">
-				<!-- Generated Content -->
-			</div>
-			<div id="controls">
-				<a onclick="jRamune.endCall()" id="end_call_button" class="button red_button width_192" href="#">Hang Up</a>
-				<!--a onclick="showRamuneSettings()" id="settings_button" class="button green_button width_192 top_space" href="#">Settings</a-->
-				<!--div id="pantilt_control" class="top_space">
-					<a onmousedown="cameraCommand('MOVE_UP')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_up" class="ptz_button" href="#"><img src="images/1uparrow-256.png" /></a>
-					<a onmousedown="cameraCommand('MOVE_LEFT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_left" class="ptz_button" href="#"><img src="images/1leftarrow-256.png" /></a>
-					<a onclick="cameraCommand('MOVE_STOP')" id="ptz_button_stop" class="ptz_button" href="#"><img src="images/cnrdelete-all-256.png" /></a>
-					<a onmousedown="cameraCommand('MOVE_RIGHT')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_right" class="ptz_button" href="#"><img src="images/1rightarrow-256.png" /></a>
-					<a onmousedown="cameraCommand('MOVE_DOWN')" onmouseup="cameraCommand('MOVE_STOP')" id="ptz_button_down" class="ptz_button" href="#"><img src="images/1downarrow-256.png" /></a>	
-				</div>
-				<div id="zoom_control" class="top_space">
-					<a onmousedown="cameraCommand('ZOOM_IN')" onmouseup="cameraCommand('ZOOM_STOP')" id="zoom_in_button" class="ptz_button" href="#"><img src="images/viewmag+-256.png" /></a>
-					<a onmousedown="cameraCommand('ZOOM_OUT')" onmouseup="cameraCommand('ZOOM_STOP')" id="zoom_out_button" class="ptz_button" href="#"><img src="images/viewmag--256.png" /></a>
-				</div-->	
-				<div id="ui_control" class="top_space">
-					<a onclick="toggleLocalView()" class="source" href="#"><img src="images/agt_member-256.png" /></a>
-				</div>
-			</div>
-			<!--div id="sources">
-				<a onclick="videoswitchCommand(1)" class="source" href="#"><img src="images/DeviceCamera_256.png" /></a>
-				<a onclick="videoswitchCommand(2)" class="source" href="#"><img src="images/OhDoctorPNG/otoscopeSilver256.png" /></a>
-				<a onclick="" class="source" href="#"><img src="images/mic_256x256.png" /></a>
-				<a onclick="" class="source" href="#"><img src="images/OhDoctorPNG/StethoRouge256.png" /></a>
-			</div-->
-		</div>
-		<div id="ramunex"></div><!-- NOTE: Actual SWF. Must 'display: block' at all times -->
-
-		<!-- jRamune.states.CALL_FAILED -->
-		<div id="RamuneCallFailed">
-			<span class="call_desc">Not Available</span>
-			<a class="button red_button" href="#" onclick="jRamune.endCall()">Hang Up</a>
-		</div>
-		
+	<body>
 	</body>
 </html>

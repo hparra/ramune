@@ -14,10 +14,23 @@
  */
 var Ramune = (function() {
 /* private */
-	var ramune; // Flash root
+	var ramune, // Flash root
+		isInitialized = false, 
+		listeners: {
+			"load": null
+		};
 	
 	// FIXME: Should find out whether it worked or not
 	var initialize = function(path, vars) {
+		// TODO: check that dependent libs are available
+		
+		/* DOM */
+		// TODO: should create div independently? yes
+		div = document.createElement('div');
+		div.setAttribute('id', 'Ramune');
+		$("body").append(div);
+				
+		/* SWF */
 		// TODO: replace with pure swfobject
 		$("#Ramune").flash({
 			id: 'ramune',
@@ -32,10 +45,18 @@ var Ramune = (function() {
 			},
 			flashvars: vars
 		});
+		
+		/* FABridge */
+		FABridge.addInitializationCallback("Ramune", function() {
+			ramune = FABridge.Ramune.root();
+			// TODO: check that ramune is defined
+			isInitialized = true;
+		});
 	};
 	
 /* public */
 	return {
+		version: 1.0/*,
 		// TODO: Closure to make static
 		states: {
 			CALL_NOT_READY: "RamuneCallNotReady",
@@ -66,6 +87,18 @@ var Ramune = (function() {
 				default:
 				break;
 			}
+		},
+		initialize: function() {
+			console.log('hi!');
+			if (isInitialized) {
+				console.log("Already initialized");
+			}
+			else {
+				initialize();
+			}
+		},
+		addEventListener: function(e, f) {
+			listeners[e] = f;
 		},
 		onNetConnectionSuccess: function(farID) {
 			event = jQuery.Event(jRamune.events.NETCONNECTION_SUCCESSFUL);
@@ -106,6 +139,6 @@ var Ramune = (function() {
 		},
 		show: function() {
 			ramune.show();
-		}
+		}*/
 	};
 }());

@@ -28,7 +28,10 @@ University of California, Irvine
 		<script type="text/javascript" src="javascripts/jquery/jquery.blockUI.js"></script>
 		<script type="text/javascript" src="javascripts/jquery/jquery.getUrlParam.js"></script>
 
-		<script type="text/javascript" src="javascripts/jRamune.js"></script>
+		<!--script type="text/javascript" src="javascripts/jRamune.js"></script-->
+		<script type="text/javascript" src="javascripts/Ramune.js"></script>
+
+
 		<script type="text/javascript" src="javascripts/ramune.js"></script>
 		<script type="text/javascript" src="javascripts/hexify.js"></script>
 		<script type="text/javascript" src="javascripts/VISCA.js"></script>
@@ -36,7 +39,14 @@ University of California, Irvine
 
 		<script type="text/javascript">
 
-		var ramune;
+		//var ramune;
+		var fms;
+		Ramune.addEventListener('onLoad', function() {
+			fms = Ramune.newNetConnection();
+			fms.addEventListener()
+		});
+
+
 		var username;
 		var password; // FIXME: Bad!
 
