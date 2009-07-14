@@ -1,5 +1,4 @@
-package ramune
-{
+package {
 	import flash.media.Camera;
 	import flash.media.Video;
 	import flash.net.NetStream;

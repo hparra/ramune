@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<actionScriptProperties mainApplicationPath="ramune.mxml" version="3">
+<actionScriptProperties mainApplicationPath="Ramune.mxml" version="3">
 <compiler additionalCompilerArguments="-locale en_US" copyDependentFiles="true" enableModuleDebug="true" generateAccessible="false" htmlExpressInstall="false" htmlGenerate="true" htmlHistoryManagement="false" htmlPlayerVersion="10.0.0" htmlPlayerVersionCheck="true" outputFolderPath="bin-debug" rootURL="http://localhost:4000/ramune.html" sourceFolderPath="src" strict="true" useApolloConfig="false" verifyDigests="true" warn="true">
 <compilerSourcePath/>
 <libraryPath defaultLinkType="1">
@@ -9,7 +9,7 @@
 <sourceAttachmentPath/>
 </compiler>
 <applications>
-<application path="ramune.mxml"/>
+<application path="Ramune.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>

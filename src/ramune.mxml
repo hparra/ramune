@@ -4,7 +4,7 @@
 Ramune - Flash Video Conferencing
 
 Copyright © 2008 The Regents of the University of California
-All Rights Reserved 	
+All Rights Reserved 
 
 Created by Hector Guillermo Parra, hector@hectorparra.com
 California Institute for Telecommunications and Information Technology
@@ -12,7 +12,7 @@ University of California, Irvine
 
 -->
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:ramune="ramune.*"
+	xmlns:ramune="*"
 	layout="absolute"
 	width="0"
 	height="0"
@@ -141,7 +141,7 @@ University of California, Irvine
         			// TODO: Unknown State Exception
         			break;
         	}
-        }
+        }        
         public function connect():void {
         	netConnection = new NetConnection();
         	netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnectionHandler);
@@ -158,7 +158,8 @@ University of California, Irvine
             		debug("NearID: " + netConnection.nearID);
             		// CHANGED: Reporting nearID to Javascript
             		// FIXME: Change name to reflect what is happening here
-            		ExternalInterface.call("jRamune.onNetConnectionSuccess", netConnection.nearID);
+            		//ExternalInterface.call("jRamune.onNetConnectionSuccess", netConnection.nearID);
+            		ExternalInterface.call("Ramune.triggerEvent", "NetConnectionSuccess", netConnection.nearID);
             		onNetConnectSuccess();
                 	break;
                 	
