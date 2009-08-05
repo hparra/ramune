@@ -16,9 +16,9 @@ University of California, Irvine
 		<title>Ramune Test</title>
 		
 		<!-- Third-party (vendor) -->
-		<script type="text/javascript" src="../vendor/jquery-1.3.2.js"></script>
-		<script type="text/javascript" src="../vendor/jquery.swfobject.js"></script>
-		<script type="text/javascript" src="../vendor/FABridge.js"></script>
+		<script type="text/javascript" src="http://marco.calit2.uci.edu/lib/swfobject/2.2/swfobject.js"></script>
+		<script type="text/javascript" src="http://marco.calit2.uci.edu/lib/swfobject/fabridge/FABridge.js"></script>
+		<script type="text/javascript" src="http://marco.calit2.uci.edu/lib/jquery/jquery-1.3.2.js"></script>
 
 		<!-- Ramune -->
 		<script type="text/javascript" src="Ramune.js"></script>
@@ -26,13 +26,16 @@ University of California, Irvine
 			$(document).ready(function() {
 				
 				Ramune.addEventListener(Ramune.INITIALIZED, function() {
-					Ramune.resize(640, 480);
+					console.debug("Ramune.INITIALIZED caught");
+					//Ramune.resize(640, 480);
 					Ramune.connect();
 				});
 				Ramune.initialize();
 				
 			});
 		</script>
+		<style>
+		</style>
 	<body>
 	</body>
 </html>

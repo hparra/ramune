@@ -10,6 +10,21 @@
  * University of California, Irvine
  */ 
 
+/*
+ *  DEPENDENCIES
+ * 
+ * SWFObject
+ * jQuery (Will be removed in future)
+ * 
+ */
+
+if (typeof console === 'undefined') {
+	var console = {
+		debug: function() {},
+		log: function() {}
+	};
+}
+
 /**
  * This uses a singleton pattern because ExternalInterface prevents proper closure for power constructor
  */
@@ -24,38 +39,51 @@ var Ramune = (function() {
 	
 	// FIXME: Should find out whether it worked or not
 	var initialize = function(options) {
-		// TODO: check that dependent libs are available
+		
+		if (typeof swfobject === "undefined") {
+			throw new Error("SWFObjectNotFound", "\'swfobject\' undefined. Initialization aborting.");
+		}
+		
+		// TODO: deprecate
+		if (typeof jQuery === "undefined") {
+			throw new Error("jQueryNotFound", "\'jquery\' undefined. Initialization aborting.");
+		}
+		
+		// TODO: deprecate
+		if (typeof FABridge === "undefined") {
+			throw new Error("FABridgeNotFound", "\'FABridge\' undefined. Initialization aborting.");
+		}
 		
 		/* DOM */
 		div = document.createElement('div');
 		div.setAttribute('id', 'Ramune');
+		div.setAttribute('class', 'Ramune');
 		document.body.appendChild(div);
 				
 		/* SWF */
-		// TODO: replace with pure swfobject
-		vars = {
+		flashvars = {
 			bridgeName: "Ramune",
-			serverURI: "rtmfp://stratus.adobe.com/957c10737240a05c0143ce7f-b33403f49938" // user should provide
+			serverURI: "rtmfp://stratus.adobe.com/957c10737240a05c0143ce7f-b33403f49938" // user should provide?
+		};		
+		params = {
+			//wmode: "transparent", // FIXME: See http://twitter.com/hgparra/status/1309417926
+			//wmode: "opaque",
+			allowscriptaccess: "always",
+			allowfullscreen: "true"
 		};
-		options.path = "../bin-debug/Ramune.swf";
-		$("#Ramune").flash({
-			id: 'ramune',
-			swf: path,
-			width: '0',
-			height: '0',
-			params: {
-				//wmode: "transparent", // FIXME: See http://twitter.com/hgparra/status/1309417926
-				//wmode: "opaque",
-				allowscriptaccess: "always",
-				allowfullscreen: "true"
-			},
-			flashvars: vars
-		});
-		
+		attributes = {};
+		embed_callback = function() {
+			console.debug("[RamuneJS] SWFObject embedded");
+		};
+		swfobject.embedSWF("../bin-debug/Ramune.swf", "Ramune", "0", "0", "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
+
+		// TODO: deprecate
 		/* FABridge */
 		FABridge.addInitializationCallback("Ramune", function() {
 			ramune = FABridge.Ramune.root();
-			// TODO: check that ramune is defined
+			if (typeof ramune === "undefined" || ramune === null) {
+				throw new Error("RamuneUndefined", "\'ramune\' undefined. FABridge Initialization aborting.");
+			}
 			isInitialized = true;
 			listeners[INITIALIZED]();
 		});
@@ -68,6 +96,7 @@ var Ramune = (function() {
 		//
 		version: 1,
 
+		// FIXME: Redesign
 		/**
 		 * Initializes Ramune
 		 */
@@ -80,6 +109,7 @@ var Ramune = (function() {
 			}
 		},
 		
+		// FIXME: Hackey
 		/**
 		 * @param e event name
 		 * @param f function
@@ -101,6 +131,9 @@ var Ramune = (function() {
 			}
 			
 			$("#Ramune").trigger(event); // TODO: jQuery removal
+		},
+		resize: function(width, height) {
+			ramune.setSize(width, height);
 		},
 		connect: function() {
 			ramune.connect();
