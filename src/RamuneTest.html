@@ -23,19 +23,59 @@ University of California, Irvine
 		<!-- Ramune -->
 		<script type="text/javascript" src="Ramune.js"></script>
 		<script type="text/javascript">
+			RamuneTest = {
+				placeCall: function() {
+					v = prompt("Adobe Stratus farID: ");
+					if (v !== null)
+						Ramune.placeCall("?", v);
+				}
+			}
+		
 			$(document).ready(function() {
+
 				
+
+				// FIXME: redesign
 				Ramune.addEventListener(Ramune.INITIALIZED, function() {
 					console.debug("Ramune.INITIALIZED caught");
-					//Ramune.resize(640, 480);
+					Ramune.resize(640, 480);
 					Ramune.connect();
 				});
+				
 				Ramune.initialize();
 				
+				// NOTE: SWFObject replaces my _div_ with _object_ so I have to bind after init
+				
+				$("#Ramune").bind(Ramune.events.STATE_CHANGE, function(e) {
+					$("#current_state").html(e.state);
+				});
+				
+				$("#Ramune").bind(Ramune.events.RESIZE, function(e) {
+					$("#Ramune").css("width", e.width);
+					$("#Ramune").css("height", e.height);
+				});
 			});
 		</script>
 		<style>
+			body {
+				color: white;
+				background-color: black;
+			}
+		
+			#Ramune {
+				border: 1px solid #AAAAAA;
+			}
 		</style>
 	<body>
+		<div id="Ramune"></div>
+		<h3>Current State: <span id="current_state"></span></h3>
+		<h3>Commands</h3>
+		<ul>
+			<li><a href="#" onclick="RamuneTest.placeCall()">Place Call</a></li>
+			<li><a href="#" onclick="RamuneTest.acceptCall()">Accept Call</a></li>
+			<li><a href="#" onclick="RamuneTest.ignoreCall()">Ignore Call</a></li>
+			<li><a href="#" onclick="RamuneTest.endCall()">End Call</a></li>
+			<li><a href="#" onclick="RamuneTest.cancelCall()">Cancel Call</a></li>
+		</ul>
 	</body>
 </html>

@@ -135,13 +135,13 @@ University of California, Irvine
         		case CALL_FAILED:
         			callState = state;
         			debug("State Changed: " + state);
-        			ExternalInterface.call("jRamune.onCallStateChanged", state);
+        			ExternalInterface.call("Ramune.triggerCallStateChangeEvent", state);
         			break;
         		default:
         			// TODO: Unknown State Exception
         			break;
         	}
-        }        
+        }
         public function connect():void {
         	netConnection = new NetConnection();
         	netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnectionHandler);
@@ -507,7 +507,9 @@ University of California, Irvine
 			previousHeight = this.height;
 			this.width = width;
 			this.height = height;
-			ExternalInterface.call("Ramune.onResize", this.width, this.height);
+			
+			// TODO: Should we call a function or do event creation directly?
+			ExternalInterface.call("Ramune.triggerResizeEvent", this.width, this.height);
 		}
 		public function hide():void {
 			// detach videos

@@ -31,11 +31,16 @@ if (typeof console === 'undefined') {
 var Ramune = (function() {
 /* private */
 	var	INITIALIZED = "INITIALIZED";
-
+ 
 	var ramune, // Flash root
 		isInitialized = false,
 		listeners = {
 		};
+	
+	var events = {
+		RESIZE: "RAMUNE_RESIZE_EVENT",
+		STATE_CHANGE: "RAMUNE_STATE_CHANGE_EVENT"
+	};
 	
 	// FIXME: Should find out whether it worked or not
 	var initialize = function(options) {
@@ -55,11 +60,14 @@ var Ramune = (function() {
 		}
 		
 		/* DOM */
-		div = document.createElement('div');
-		div.setAttribute('id', 'Ramune');
-		div.setAttribute('class', 'Ramune');
-		document.body.appendChild(div);
-				
+		div = document.getElementById('Ramune');
+		if (div === null) {
+			div = document.createElement('div');
+			div.setAttribute('id', 'Ramune');
+			div.setAttribute('class', 'Ramune');
+			document.body.appendChild(div);
+		}
+		
 		/* SWF */
 		flashvars = {
 			bridgeName: "Ramune",
@@ -87,12 +95,14 @@ var Ramune = (function() {
 			isInitialized = true;
 			listeners[INITIALIZED]();
 		});
+		
 	};
 	
 	return {
 /* public */
 		INITIALIZED: INITIALIZED,
 		NETCONNECTION_SUCCESSFUL: "NetConnectionSuccessful",
+		events: events,
 		//
 		version: 1,
 
@@ -132,10 +142,22 @@ var Ramune = (function() {
 			
 			$("#Ramune").trigger(event); // TODO: jQuery removal
 		},
+		triggerCallStateChangeEvent: function(state) {
+			console.debug("Triggering STATE_CHANGE");
+			event = jQuery.Event(Ramune.events.STATE_CHANGE);
+			event.state = state;
+			$("#Ramune").trigger(event);
+		},
+		triggerResizeEvent: function(width, height) {
+			event = jQuery.Event(Ramune.events.RESIZE);
+			event.width = width;
+			event.height = height;
+			$('#Ramune').trigger(event);
+		},
 		resize: function(width, height) {
 			ramune.setSize(width, height);
 		},
-		connect: function() {
+		connect: function() {	
 			ramune.connect();
 		},
 		placeCall: function(name, farID) {
