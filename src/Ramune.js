@@ -94,7 +94,7 @@ var Ramune = (function() {
 			}
 			isInitialized = true;
 			listeners[INITIALIZED]();
-		});
+		});	
 		
 	};
 	
