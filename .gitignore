@@ -1,4 +1,5 @@
 .DS_Store
 .actionScriptProperties
+html-template/.DS_Store
 bin-debug/*
 bin-release/*
