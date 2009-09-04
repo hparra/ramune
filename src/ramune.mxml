@@ -80,17 +80,6 @@ University of California, Irvine
 			localScale: 0.25
 		};
 		
-		/*
-		 * Uber Methods
-		 */
-		public function getRemoteSharedObject(name:String, localPath:String, persistence:Object = false, secure:Boolean = false):SharedObject {
-			return SharedObject.getRemote(name, localPath, persistence, secure);
-		}
-		public function newNetConnection():NetConnection {
-			return new NetConnection();
-		}
-
-		
 		private function onPreinitialize():void {
 		}
 		private function onInitialize():void {		

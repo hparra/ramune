@@ -28,7 +28,7 @@ if (typeof console === 'undefined') {
 /**
  * This uses a singleton pattern because ExternalInterface prevents proper closure for power constructor
  */
-var Ramune = (function() {
+var Ramune = window.Ramune = (function() {
 /* private */
 	var	INITIALIZED = "INITIALIZED";
  
