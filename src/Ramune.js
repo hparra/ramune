@@ -83,7 +83,7 @@ var Ramune = (function() {
 		embed_callback = function() {
 			console.debug("[RamuneJS] SWFObject embedded");
 		};
-		swfobject.embedSWF("../bin-release/Ramune.swf", "Ramune", "0", "0", "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
+		swfobject.embedSWF("Ramune.swf", "Ramune", "0", "0", "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
 
 		// TODO: deprecate
 		/* FABridge */
