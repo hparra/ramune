@@ -3,3 +3,4 @@
 html-template/.DS_Store
 bin-debug/*
 bin-release/*
+release/*
