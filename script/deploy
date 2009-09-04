@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -d release/public/ ]
+	then
+		rm -R release/public/
+fi
+
+cp -R bin-release/ release/public/
+if [ $? -eq 0 ]
+	then
+		cap deploy
+fi

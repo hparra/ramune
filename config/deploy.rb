@@ -2,15 +2,16 @@ default_run_options[:pty] = true
 ssh_options[:forward_agent] = true
 
 set :application, "ramune"
-set :domain, "armin.calit2.uci.edu"
+set :domain, "marco.calit2.uci.edu"
 
 # this does NOT deploy via git
 set :scm, :none
 set :repository, 'bin-release/'
 set :deploy_via, :copy
 
+set :user, "marco"
+set :use_sudo, false
 set :deploy_to, "/var/www/#{application}"
-
 
 role :app, domain
 role :web, domain
