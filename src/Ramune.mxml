@@ -47,9 +47,11 @@ University of California, Irvine
 		private const CALL_ESTABLISHED:String = "RamuneCallEstablished";
 		private const CALL_FAILED:String = "RamuneCallFailed";
 
-		private var cams:Array;
+		private var cameraManager:CameraManager;		
+		//private var cams:Array;
+		//private var default_cam_index:int;
+
 		private var mics:Array;
-		private var default_cam_index:int;
 		private var default_mic_index:int;
 		private var remoteName:String;
 		
@@ -105,11 +107,12 @@ University of California, Irvine
 			//ExternalInterface.addCallback("acceptCall", acceptCall);
 			//ExternalInterface.addCallback("endCall", endCall); 
 			
-			initializeCams();
+			cameraManager = new CameraManager();
+			//initializeCams();
 			initializeMics();
 			//initializeSettings(); // TODO: Finish
 			
-			this.setSize(0, 0);
+			//this.setSize(0, 0);
 			
 			//ExternalInterface.call(id + "")
 			debug("ApplicationComplete");
@@ -294,7 +297,8 @@ University of California, Irvine
 
 				setSize(params.width, params.height);
 				setLocalVideo();
-				outgoingStream.attachCamera(cams[default_cam_index]);
+				//outgoingStream.attachCamera(cams[default_cam_index]);
+				outgoingStream.attachCamera(cameraManager.getDefaultCamera());
 				outgoingStream.attachAudio(mics[default_mic_index]);
 			}
 			i.onIm = function(name:String, text:String):void {
@@ -310,7 +314,8 @@ University of California, Irvine
 		private function setLocalVideo():void {
 			if (localVideoIndex < 0)
 				localVideoIndex = ui.newVideo(params.width, params.height, 20, 20, 0);
-			ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
+			//ui.attachCameraToVideo(cams[default_cam_index], localVideoIndex);
+			ui.attachCameraToVideo(cameraManager.getDefaultCamera(), localVideoIndex);
 			ui.resizeVideo(localVideoIndex, 160, 120);
 		}
 		private function setRemoteVideo():void {
@@ -352,7 +357,7 @@ University of California, Irvine
 			outgoingStream.send("onCallAccepted", "MY_USERNAME"); // FIXME
 			
 			setLocalVideo();
-			outgoingStream.attachCamera(cams[default_cam_index]);
+			outgoingStream.attachCamera(cameraManager.getDefaultCamera());
 			outgoingStream.attachAudio(mics[default_mic_index]);
 								
 			changeCallState(CALL_ESTABLISHED);
@@ -406,6 +411,7 @@ University of California, Irvine
 				endCall();
 		}
 /*******************/
+/*&
 		public function initializeCams():void {
 			if (Camera.names.length > 0) {
 				cams = new Array();
@@ -424,6 +430,7 @@ University of California, Irvine
 				debug("No Cameras found!");
 			}
 		}
+		*/
         public function initializeMics():void {
 			if (Microphone.names.length > 0) {
 					mics = new Array();
@@ -445,6 +452,7 @@ University of California, Irvine
 				debug("No Microphones found!");
 			}
 		}
+		/*
 		public function initializeSettings():void {
 			settings = SharedObject.getLocal("RamuneSettings");
 
@@ -481,7 +489,8 @@ University of California, Irvine
 				}
 			}
 
-		}
+		}*/
+		/*
 		public function findCameraIndexByName(name:String):int {
 			if (name != null)
 				for (var i:int = 0; i < this.cams.length; ++i)
@@ -489,6 +498,7 @@ University of California, Irvine
 						return i;
 			return -1;
 		}
+		*/
 		public function setSize(width:Number, height:Number):void {	
 			previousWidth = this.width;
 			previousHeight = this.height;
