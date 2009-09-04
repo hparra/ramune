@@ -28,6 +28,18 @@ University of California, Irvine
 					v = prompt("Adobe Stratus farID: ");
 					if (v !== null)
 						Ramune.placeCall("?", v);
+				},
+				acceptCall: function() {
+					Ramune.acceptCall();
+				},
+				cancelCall: function() {
+					Ramune.cancelCall();
+				},
+				ignoreCall: function() {
+					Ramune.ignoreCall();
+				},
+				endCall: function() {
+					Ramune.endCall();
 				}
 			}
 		
@@ -46,13 +58,17 @@ University of California, Irvine
 				
 				// NOTE: SWFObject replaces my _div_ with _object_ so I have to bind after init
 				
+				$("#Ramune").bind(Ramune.events.RESIZE, function(e) {
+					$("#Ramune").css("width", e.width);
+					$("#Ramune").css("height", e.height);
+				});
+				
 				$("#Ramune").bind(Ramune.events.STATE_CHANGE, function(e) {
 					$("#current_state").html(e.state);
 				});
 				
-				$("#Ramune").bind(Ramune.events.RESIZE, function(e) {
-					$("#Ramune").css("width", e.width);
-					$("#Ramune").css("height", e.height);
+				$("#Ramune").bind(Ramune.events.NETCONNECTION_SUCCESS, function(e) {
+					$("#near_id").html(e.nearID);
 				});
 			});
 		</script>
@@ -68,14 +84,15 @@ University of California, Irvine
 		</style>
 	<body>
 		<div id="Ramune"></div>
+		<h3>My nearID: <span id="near_id"></span></h3>
 		<h3>Current State: <span id="current_state"></span></h3>
 		<h3>Commands</h3>
 		<ul>
 			<li><a href="#" onclick="RamuneTest.placeCall()">Place Call</a></li>
 			<li><a href="#" onclick="RamuneTest.acceptCall()">Accept Call</a></li>
+			<li><a href="#" onclick="RamuneTest.cancelCall()">Cancel Call</a></li>
 			<li><a href="#" onclick="RamuneTest.ignoreCall()">Ignore Call</a></li>
 			<li><a href="#" onclick="RamuneTest.endCall()">End Call</a></li>
-			<li><a href="#" onclick="RamuneTest.cancelCall()">Cancel Call</a></li>
 		</ul>
 	</body>
 </html>

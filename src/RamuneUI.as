@@ -92,6 +92,7 @@ package {
 		
 		// FIXME: https://bugs.adobe.com/jira/browse/ASC-3115 & https://bugs.adobe.com/jira/browse/SDK-11262
 		public function clearVideo(index:uint):void {
+			videos[index].smoothing = false;
 			videos[index].clear();
 		}
 		

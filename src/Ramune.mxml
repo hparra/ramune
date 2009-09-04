@@ -156,10 +156,7 @@ University of California, Irvine
             	case "NetConnection.Connect.Success":
             		debug("Successfully connected to " + netConnection.uri);
             		debug("NearID: " + netConnection.nearID);
-            		// CHANGED: Reporting nearID to Javascript
-            		// FIXME: Change name to reflect what is happening here
-            		//ExternalInterface.call("jRamune.onNetConnectionSuccess", netConnection.nearID);
-            		ExternalInterface.call("Ramune.triggerEvent", "NetConnectionSuccess", netConnection.nearID);
+            		ExternalInterface.call("Ramune.triggerNetConnectionSuccessEvent", netConnection.nearID);
             		onNetConnectSuccess();
                 	break;
                 	
@@ -276,7 +273,7 @@ University of California, Irvine
 						
 			var o:Object = new Object();
 			o.onPeerConnect = function(caller:NetStream):Boolean {
-				debug("Callee connecting to media stream: " + caller.farID);
+				debug("Callee connecting to media stream: " + caller.farID)	;
 				return true;
 			}
 			outgoingStream.client = o;
@@ -397,7 +394,8 @@ University of California, Irvine
 			if (remoteVideoIndex > -1)
 				ui.clearVideo(remoteVideoIndex);
 			
-			setSize(0, 0);
+			// TODO: should trigger event instead
+			//setSize(0, 0);
 			
 			// FIXME: Remove
 			remoteName = "";

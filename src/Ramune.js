@@ -39,7 +39,8 @@ var Ramune = (function() {
 	
 	var events = {
 		RESIZE: "RAMUNE_RESIZE_EVENT",
-		STATE_CHANGE: "RAMUNE_STATE_CHANGE_EVENT"
+		STATE_CHANGE: "RAMUNE_STATE_CHANGE_EVENT",
+		NETCONNECTION_SUCCESS: "RAMUNE_NETCONNECTION_SUCCESS_EVENT",
 	};
 	
 	// FIXME: Should find out whether it worked or not
@@ -101,7 +102,6 @@ var Ramune = (function() {
 	return {
 /* public */
 		INITIALIZED: INITIALIZED,
-		NETCONNECTION_SUCCESSFUL: "NetConnectionSuccessful",
 		events: events,
 		//
 		version: 1,
@@ -130,7 +130,7 @@ var Ramune = (function() {
 		},
 		triggerEvent: function(e) {
 			switch (e) {
-				case this.NETCONNECTION_SUCCESSFUL:
+				case this.NETCONNECTION_SUCCESS:
 				break;
 				case this.STATE_CHANGED:
 				break;
@@ -152,6 +152,12 @@ var Ramune = (function() {
 			event = jQuery.Event(Ramune.events.RESIZE);
 			event.width = width;
 			event.height = height;
+			$('#Ramune').trigger(event);
+		},
+		triggerNetConnectionSuccessEvent: function(nearID) {
+			console.debug("Triggering NETCONNECTION_SUCCESS");
+			event = jQuery.Event(Ramune.events.NETCONNECTION_SUCCESS);
+			event.nearID = nearID;
 			$('#Ramune').trigger(event);
 		},
 		resize: function(width, height) {
