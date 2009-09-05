@@ -51,8 +51,9 @@ University of California, Irvine
 		//private var cams:Array;
 		//private var default_cam_index:int;
 
-		private var mics:Array;
-		private var default_mic_index:int;
+		private var micManager:MicrophoneManager;
+		//private var mics:Array;
+		//private var default_mic_index:int;
 		private var remoteName:String;
 		
 
@@ -109,7 +110,8 @@ University of California, Irvine
 			
 			cameraManager = new CameraManager();
 			//initializeCams();
-			initializeMics();
+			micManager = new MicrophoneManager();
+			//initializeMics();
 			//initializeSettings(); // TODO: Finish
 			
 			//this.setSize(0, 0);
@@ -299,7 +301,7 @@ University of California, Irvine
 				setLocalVideo();
 				//outgoingStream.attachCamera(cams[default_cam_index]);
 				outgoingStream.attachCamera(cameraManager.getDefaultCamera());
-				outgoingStream.attachAudio(mics[default_mic_index]);
+				outgoingStream.attachAudio(micManager.getDefaultMicrophone());
 			}
 			i.onIm = function(name:String, text:String):void {
 				// TODO: Javascript IM
@@ -358,7 +360,7 @@ University of California, Irvine
 			
 			setLocalVideo();
 			outgoingStream.attachCamera(cameraManager.getDefaultCamera());
-			outgoingStream.attachAudio(mics[default_mic_index]);
+			outgoingStream.attachAudio(micManager.getDefaultMicrophone());
 								
 			changeCallState(CALL_ESTABLISHED);
 		}
@@ -431,6 +433,7 @@ University of California, Irvine
 			}
 		}
 		*/
+		/*
         public function initializeMics():void {
 			if (Microphone.names.length > 0) {
 					mics = new Array();
@@ -452,6 +455,7 @@ University of California, Irvine
 				debug("No Microphones found!");
 			}
 		}
+		*/
 		/*
 		public function initializeSettings():void {
 			settings = SharedObject.getLocal("RamuneSettings");
