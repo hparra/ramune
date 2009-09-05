@@ -25,7 +25,7 @@ package {
 					mics[i].framesPerPacket = 2; // Microphone default
 					mics[i].encodeQuality = 6; // Microphone default [0, 10]
 					mics[i].setSilenceLevel(0); // NOTE: needed due to strange bug
-					mics[i].setEchoSuppression(false);
+					mics[i].setUseEchoSuppression(false);
 				}
 				defaultMicrophoneIndex = Microphone.getMicrophone(-1).index;
 			}
