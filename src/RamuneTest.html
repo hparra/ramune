@@ -94,5 +94,21 @@ University of California, Irvine
 			<li><a href="#" onclick="RamuneTest.ignoreCall()">Ignore Call</a></li>
 			<li><a href="#" onclick="RamuneTest.endCall()">End Call</a></li>
 		</ul>
+		<div id="camera">
+			<p>Current Camera Name: <span id="currentCameraName"></span>	</p>
+			<form id="local_camera">
+				<fieldset>
+					<!--legend>Local Camera</legend-->
+					<dl>
+						<!-- Local Quality -->
+						<dt><label for="local_quality">Video Quality:</label></dt>
+						<dd>
+							<input id="local_quality" name="local_quality" value="90">
+							<button id="local_quality_submit" name="local_quality_submit" type="button" onclick="set_local_quality(document.forms['local_camera']['local_quality'].value)">Change</button>
+						</dd>
+					</dl>
+				</fieldset>
+			</form>
+		</div>
 	</body>
 </html>

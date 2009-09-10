@@ -1,6 +1,8 @@
 package {
+	import flash.events.StatusEvent;
 	import flash.media.Camera;
 	import flash.system.Capabilities;
+	import mx.controls.Alert;
 
 	public class CameraManager {
 		
@@ -17,10 +19,12 @@ package {
 		};
 		
 		public function CameraManager() {
+			
 			defaultCameraIndex = -1;
 			cams = null;
 			
 			if (Camera.names.length > 0) {
+				
 				cams = new Array();
 				for (var i:uint = 0; i < Camera.names.length; ++i) {
 					//debug("Found Camera " + i + ": " + Camera.names[i]);
@@ -29,7 +33,9 @@ package {
 					cams[i].setQuality(defaults.bandwidth, defaults.quality);
 					cams[i].setMode(defaults.width, defaults.height, defaults.fps);
 					cams[i].setKeyFrameInterval(defaults.keyFrameInterval);
-					//cams[i].addEventListener();
+					cams[i].addEventListener(StatusEvent.STATUS, function(event:StatusEvent):void {
+						Alert.show(event.code);
+					});
 				}
 				
 				if (Capabilities.os.search("Mac") != -1)
@@ -61,6 +67,22 @@ package {
 			else
 				return null;
 		}
+				
+		public function setQualityForAllCameras(bandwidth:uint, quality:uint):void {
+			for (var i:String in cams)
+				cams[i].setQuality(bandwidth, quality);
+		}
+		
+		public function addEventListenerToCamera(camera:Camera, listener:Function):void {
+			camera.addEventListener(StatusEvent.STATUS, listener);
+		}
+		
+		public function setParameter(name:String, value:String):void {
+			
+		}
+
+		// BY INDEX ...
+		
 		
 		public function findCameraIndexByName(name:String):int {
 			if (name !== null)
@@ -69,10 +91,18 @@ package {
 						return i;
 			return -1;
 		}
-		
-		public function setQualityForAllCameras(bandwidth:uint, quality:uint):void {
-			for (var i:String in cams)
-				cams[i].setQuality(bandwidth, quality);
+
+		public function setQuality(index:uint, quality:uint):void {
+			cam[index].setQuality(cam[index].bandwidth, quality);
 		}
+		
+		public function setBandwidth(index:uint, bandwidth:uint):void {
+			cam[index].setQuality(bandwidth, cam[i].quality);
+		}
+		
+		public function setKeyFrameInterval(index:uint, kfi:uint):void {
+			cams[index].setKeyFrameInterval(kfi);
+		}
+
 	}
 }

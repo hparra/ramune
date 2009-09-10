@@ -186,6 +186,9 @@ var Ramune = window.Ramune = (function() {
 		},
 		show: function() {
 			ramune.show();
+		},
+		getCameras: function() {
+			ramune.cameraManager.getCameras();
 		}
 	};
 })();
