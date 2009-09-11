@@ -2,6 +2,7 @@ package {
 	import flash.events.StatusEvent;
 	import flash.media.Camera;
 	import flash.system.Capabilities;
+	import com.adobe.serialization.json.JSON;
 	import mx.controls.Alert;
 
 	public class CameraManager {
@@ -81,8 +82,11 @@ package {
 			
 		}
 
+		public function getCameraAsJSON(index:uint):String {
+			return JSON.encode(cams[index]);
+		}
+
 		// BY INDEX ...
-		
 		
 		public function findCameraIndexByName(name:String):int {
 			if (name !== null)
@@ -93,11 +97,11 @@ package {
 		}
 
 		public function setQuality(index:uint, quality:uint):void {
-			cam[index].setQuality(cam[index].bandwidth, quality);
+			cams[index].setQuality(cams[index].bandwidth, quality);
 		}
 		
 		public function setBandwidth(index:uint, bandwidth:uint):void {
-			cam[index].setQuality(bandwidth, cam[i].quality);
+			cams[index].setQuality(bandwidth, cams[index].quality);
 		}
 		
 		public function setKeyFrameInterval(index:uint, kfi:uint):void {

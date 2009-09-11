@@ -21,7 +21,7 @@ package {
 		}
 		
 		public function newVideo(width:uint, height:uint, x:uint, y:uint, z:uint):uint {
-			videos.push(new Video(this.width, this.height));
+			videos.push(new Video(width, height));
 			var index:uint = videos.length - 1;
 			this.addChild(videos[index]);
 			videos[index].smoothing = true;

@@ -114,6 +114,7 @@ University of California, Irvine
 			//this.setSize(0, 0);
 			
 			//ExternalInterface.call(id + "")
+			debug(cameraManager.getCameraAsJSON(0));
 			debug("ApplicationComplete");
         }
         private function changeCallState(state:String):void {
@@ -133,11 +134,20 @@ University of California, Irvine
         			break;
         	}
         }
+
+		// TODO: ABSTRACT FURTHER
         public function connect():void {
         	netConnection = new NetConnection();
         	netConnection.addEventListener(NetStatusEvent.NET_STATUS, netConnectionHandler);
         	netConnection.connect(params.serverURI);
         }
+
+		public function photoBooth():void {
+			debug("photo booth");
+			var video_index:uint = ui.newVideo(640, 480, 0, 0, 0);
+			ui.attachCameraToVideo(cameraManager.getDefaultCamera(), video_index);
+		}
+
     	private function netConnectionHandler(event:NetStatusEvent):void
 		{
 			debug("NetConnection event: " + event.info.code);
