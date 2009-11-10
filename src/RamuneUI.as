@@ -2,8 +2,11 @@ package {
 	import flash.media.Camera;
 	import flash.media.Video;
 	import flash.net.NetStream;
-	
+	import flash.display.BitmapData;
 	import mx.core.UIComponent;
+	import com.adobe.images.PNGEncoder;
+	import flash.utils.ByteArray;
+	import com.dynamicflash.util.Base64;
 
 	/**
 	 * All Flex components extend UIComponent, which is a grandchild of Sprite.
@@ -51,6 +54,16 @@ package {
 		
 		public function removeVideo(index:uint):void {
 			this.removeChild(videos[index]);
+		}
+		
+		// TODO: Split this in half?
+		// returns PNG Base64
+		public function captureVideo(index:uint):String {
+			var bitmapData:BitmapData = new BitmapData(videos[index].width, videos[index].height);
+			bitmapData.draw(videos[index]);
+			var byteArray:ByteArray = PNGEncoder.encode(bitmapData);
+			var base64:String = Base64.encodeByteArray(byteArray);
+			return base64;
 		}
 		
 		/**

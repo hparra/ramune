@@ -1,0 +1,122 @@
+Ramune
+======
+Hector G. Parra <hector@hectorparra.com>
+
+Ramune is an Adobe Flash 10 application and accompanying JavaScript library specializing in Microphone/Camera acquisition and Audio/Video communication and presentation. It is meant to interface entirely through JavaScript and contains no chrome.
+
+NOTE: This README is formatted in AsciiDoc (http://powerman.name/doc/asciidoc)
+
+== Requirements
+
+Ramune requires Adobe Flash 10: http://www.adobe.com/products/flashplayer/
+
+Ramune requires certain JavaScript libraries. See Dependencies.
+
+Ramune has been thoroughly tested on Firefox 3.0+. It was also been tested on Safari and Chrome. It does not yet work with Internet Explorer.
+
+
+=== Dependencies
+
+Ramune currently depends on three libraries, two of which we wish to deprecate in the future. Ramune.js actually checks for these libraries and throws an exception if one of them was not found. It does not yet support dependency injection.
+
+* SWFObject: http://code.google.com/p/swfobject/
+* FABridge: http://livedocs.adobe.com/flex/3/html/help.html?content=ajaxbridge_1.html
+* jQuery: http://jquery.com/
+
+The Telios group at Calit2 maintains a mirror of tested versions of these dependencies:
+
+* SWFObject: http://marco.calit2.uci.edu/lib/swfobject/2.2/swfobject.js
+* FABridge: http://marco.calit2.uci.edu/lib/swfobject/fabridge/FABridge.js
+* jQuery: http://marco.calit2.uci.edu/lib/jquery/jquery-1.3.2.js
+
+
+
+== Installation
+
+There are three ways to acquire Martinelli:
+
+* Compressed Released: http://telios.calit2.uci.edu/framework.html
+* Nightly Mirror: http://marco.calit2.uci.edu/ramune/
+* Github Repository: https://github.com/hparra/ramune
+
+
+
+== Usage
+
+Using Ramune can be difficult since it does so much! Ramune outputs plenty of debug information, so we encourage you to use Firefox with the Firebug plug-in: http://getfirebug.com/
+
+
+=== Dependency Origin
+
+Adobe Flash Player has a standard Same-Origin Policy. Your HTML file and Ramune.swf should originate from the same domain or else the ability to interface with Ramune using JavaScript will be denied. Ramune.js assumes that Ramune.swf is in this directory as itself.
+
+
+=== Load Dependencies
+
+Assuming the following are in your local directory, load the SWFObject, FABridge, jQuery, and Ramune JavaScripts using the <script> HTML tag:
+
+	<script type="text/javascript" src="swfobject.js"></script>
+	<script type="text/javascript" src="FABridge.js"></script>
+	<script type="text/javascript" src="jquery-1.3.2.js"></script>
+	<script type="text/javascript" src="Ramune.js"></script>
+	
+
+=== Load Ramune
+
+You can specify where Ramune will live by using the following HTML tag:
+
+	<div id="Ramune"></div>
+	
+If Ramune.js does not find this tag, it will create it for you and append it to the very end of your HTML document.
+
+IMPORTANT: SWFObject will actually replace this tag with <object id="Ramune"></object>.
+
+You may want to add a callback. A callback is a function that executes when an event associated with a function has fired. In this case, you can specify a function to execute after Ramune has been initialized:
+
+	Ramune.addEventListener(Ramune.INITIALIZED, function() {
+		// your code
+	});
+
+Initialize Ramune:
+
+	Ramune.initialize();
+
+Ramune is 0 x 0 pixels in size by default. You should resize it when appropriate:
+
+	Ramune.resize(640, 480);
+	
+IMPORTANT: Don't forget to resize it's containing <object> as well
+
+
+=== State Machine
+
+Depending on your use, you may use one of Ramune's state machines. For example, if you were to use Ramune for RTMFP communication, the following states apply:
+
+* CALL_NOT_READY
+* CALL_READY
+* CALL_CALLING
+* CALL_RINGING
+* CALL_ESTABLISHED
+* CALL_FAILED
+
+These states change by calling a function that is appropriate for that state e.g. Ramune.placeCall();
+
+You can bind an STATE_CHANGE event listener to Ramune:
+
+	$("#Ramune").bind(Ramune.events.STATE_CHANGE, function(e) {
+		// your code
+	});
+
+
+=== Learning by Example
+
+RamuneTest.html aims to offer an easy interface to test all of Ramune's features. It is constantly evolving and you should always inspect it after every new release.
+
+
+== Future of Ramune
+
+Unfortunately Ramune is a mixture of careful software engineering and hacked monkey patches. Future releases may break the current interface, so please back up your work and your current copy of Ramune before upgraded to newer versions.
+
+Currently, we depend on jQuery for future Internet Explorer compatibility since their DOM Event Model does not follow W3C standards, but there are known problems with FABridge, so we may remove jQuery altogether. We still recommend it for you own program which use Ramune.
+
+FABridge is a powerful JavaScript library that exposes much of ActionScript seamlessly, but Internet Explorer has difficulty with some of its finer features.

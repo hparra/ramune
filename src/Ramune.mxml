@@ -148,6 +148,12 @@ University of California, Irvine
 			ui.attachCameraToVideo(cameraManager.getDefaultCamera(), video_index);
 		}
 
+		public function snapshot():String {
+			var snapshot:String = ui.captureVideo(0);
+			debug("Base64 PNG: " + snapshot);
+			return snapshot;
+		}
+
     	private function netConnectionHandler(event:NetStatusEvent):void
 		{
 			debug("NetConnection event: " + event.info.code);

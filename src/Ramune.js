@@ -70,6 +70,7 @@ var Ramune = window.Ramune = (function() {
 		}
 		
 		/* SWF */
+		path = "Ramune.swf";
 		flashvars = {
 			bridgeName: "Ramune",
 			serverURI: "rtmfp://stratus.adobe.com/957c10737240a05c0143ce7f-b33403f49938" // user should provide?
@@ -84,7 +85,7 @@ var Ramune = window.Ramune = (function() {
 		embed_callback = function() {
 			console.debug("[RamuneJS] SWFObject embedded");
 		};
-		swfobject.embedSWF("Ramune.swf", "Ramune", "0", "0", "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
+		swfobject.embedSWF(path, "Ramune", "0", "0", "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
 
 		// TODO: deprecate
 		/* FABridge */
@@ -195,6 +196,9 @@ var Ramune = window.Ramune = (function() {
 		},
 		photoBooth: function() {
 			ramune.photoBooth();
+		},
+		snapshot: function() {
+			return ramune.snapshot();
 		}
 	};
 })();

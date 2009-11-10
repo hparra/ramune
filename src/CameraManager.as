@@ -35,7 +35,7 @@ package {
 					cams[i].setMode(defaults.width, defaults.height, defaults.fps);
 					cams[i].setKeyFrameInterval(defaults.keyFrameInterval);
 					cams[i].addEventListener(StatusEvent.STATUS, function(event:StatusEvent):void {
-						Alert.show(event.code);
+						//Alert.show(event.code);
 					});
 				}
 				

@@ -6,6 +6,7 @@
 <libraryPathEntry kind="4" path=""/>
 <libraryPathEntry kind="1" linkType="1" path="libs"/>
 <libraryPathEntry kind="3" linkType="1" path="/Users/hparra/Downloads/as3corelib-.92.1/lib/as3corelib.swc" useDefaultLinkType="false"/>
+<libraryPathEntry kind="3" linkType="1" path="/Users/hparra/Downloads/Base64/build/as3base64.swc" useDefaultLinkType="false"/>
 </libraryPath>
 <sourceAttachmentPath/>
 </compiler>
