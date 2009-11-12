@@ -39,6 +39,7 @@ There are three ways to acquire Martinelli by two code sources which require bui
 * Github Repository: https://github.com/hparra/ramune
 * Nightly Mirror: http://marco.calit2.uci.edu/ramune/
 
+IMPORTANT: Only the Nightly Mirror has compiled Ramune
 
 == Usage
 
