@@ -33,12 +33,11 @@ The Telios group at Calit2 maintains a mirror of tested versions of these depend
 
 == Installation
 
-There are three ways to acquire Martinelli:
+There are three ways to acquire Martinelli by two code sources which require building and the Nightly Mirror where you can download the latest Ramune.js and Ramune.swf:
 
 * Compressed Released: http://telios.calit2.uci.edu/framework.html
-* Nightly Mirror: http://marco.calit2.uci.edu/ramune/
 * Github Repository: https://github.com/hparra/ramune
-
+* Nightly Mirror: http://marco.calit2.uci.edu/ramune/
 
 
 == Usage
