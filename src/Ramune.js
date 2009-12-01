@@ -25,12 +25,22 @@ if (typeof console === 'undefined') {
 	};
 }
 
+console.debug("Parsing Ramune.js");
+
+var Foo = function() {
+	return {
+		bar: function() {
+			alert("lies");
+		}
+	}
+}();
+
 /**
  * This uses a singleton pattern because ExternalInterface prevents proper closure for power constructor
  */
-var Ramune = window.Ramune = (function() {
+var Ramune = function() {
 /* private */
-	var	INITIALIZED = "INITIALIZED";
+	var INITIALIZED = "INITIALIZED";
  
 	var ramune, // Flash root
 		isInitialized = false,
@@ -61,18 +71,18 @@ var Ramune = window.Ramune = (function() {
 		}
 		
 		/* DOM */
-		div = document.getElementById('Ramune');
+		div = document.getElementById('RamuneBox');
 		if (div === null) {
 			div = document.createElement('div');
-			div.setAttribute('id', 'Ramune');
-			div.setAttribute('class', 'Ramune');
+			div.setAttribute('id', 'RamuneBox');
+			//div.setAttribute('class', 'Ramune');
 			document.body.appendChild(div);
 		}
 		
 		/* SWF */
 		path = "Ramune.swf";
 		flashvars = {
-			bridgeName: "Ramune",
+			bridgeName: "RamuneSWF",
 			serverURI: "rtmfp://stratus.adobe.com/957c10737240a05c0143ce7f-b33403f49938" // user should provide?
 		};		
 		params = {
@@ -85,19 +95,18 @@ var Ramune = window.Ramune = (function() {
 		embed_callback = function() {
 			console.debug("[RamuneJS] SWFObject embedded");
 		};
-		swfobject.embedSWF(path, "Ramune", "0", "0", "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
+		swfobject.embedSWF(path, "RamuneBox", "0", "0", "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
 
 		// TODO: deprecate
 		/* FABridge */
-		FABridge.addInitializationCallback("Ramune", function() {
-			ramune = FABridge.Ramune.root();
+		FABridge.addInitializationCallback("RamuneSWF", function() {
+			ramune = FABridge.RamuneSWF.root();
 			if (typeof ramune === "undefined" || ramune === null) {
 				throw new Error("RamuneUndefined", "\'ramune\' undefined. FABridge Initialization aborting.");
 			}
 			isInitialized = true;
 			listeners[INITIALIZED]();
-		});	
-		
+		});
 	};
 	
 	return {
@@ -147,19 +156,19 @@ var Ramune = window.Ramune = (function() {
 			console.debug("Triggering STATE_CHANGE");
 			event = jQuery.Event(Ramune.events.STATE_CHANGE);
 			event.state = state;
-			$("#Ramune").trigger(event);
+			$("#RamuneBox").trigger(event);
 		},
 		triggerResizeEvent: function(width, height) {
 			event = jQuery.Event(Ramune.events.RESIZE);
 			event.width = width;
 			event.height = height;
-			$('#Ramune').trigger(event);
+			$('#RamuneBox').trigger(event);
 		},
 		triggerNetConnectionSuccessEvent: function(nearID) {
 			console.debug("Triggering NETCONNECTION_SUCCESS");
 			event = jQuery.Event(Ramune.events.NETCONNECTION_SUCCESS);
 			event.nearID = nearID;
-			$('#Ramune').trigger(event);
+			$('#RamuneBox').trigger(event);
 		},
 		resize: function(width, height) {
 			ramune.setSize(width, height);
@@ -199,6 +208,12 @@ var Ramune = window.Ramune = (function() {
 		},
 		snapshot: function() {
 			return ramune.snapshot();
+		},
+		lpc: function(function_name,blah) {
+			console.debug(function_name);
+		},
+		bar: function() {
+			alert("Foo works!");
 		}
-	};
-})();
+	}
+}();
