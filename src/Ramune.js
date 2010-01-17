@@ -173,12 +173,12 @@ var Ramune = function() {
 		resize: function(width, height) {
 			ramune.setSize(width, height);
 		},
-		connect: function() {	
-			ramune.connect();
-		},
-		placeCall: function(name, farID) {
-			ramune.placeCall(name, farID);
-		},
+		/**
+		 */
+		connect: function() { ramune.connect() },
+		/**
+		 */
+		placeCall: function(name, farID) { ramune.placeCall(name, farID);},
 		acceptCall: function() {
 			ramune.acceptCall();
 		},
@@ -209,11 +209,35 @@ var Ramune = function() {
 		snapshot: function() {
 			return ramune.snapshot();
 		},
-		lpc: function(function_name,blah) {
+		lpc: function(function_name) {
 			console.debug(function_name);
+			for (var i = 1; i < arguments.length; ++i)
+				console.debug(arguments[i]);
 		},
-		bar: function() {
-			alert("Foo works!");
+		getCameraManager: function() {
+			return ramune.getCameraManager();
+		},
+		
+		// DEBUGGING
+		dumpRamune: function() {
+			console.debug("Dumping Ramune object ...");
+			for (i in Ramune)
+				console.debug(i);
+		},		
+		dumpRamuneBridge: function() {
+			console.debug("Dumping 'ramune' FABridge object ...");
+			for (i in ramune)
+				console.debug(i);
+		},
+		dumpCameraManager: function() {
+			console.debug("Dumping Ramune.CameraManager ...");
+			for (i in ramune.getCameraManager())
+				console.debug(i);
+		},
+		dumpDefaultCamera: function() {
+			console.debug("Dumping Ramune.CameraManager.DefaultCamera ...");
+			for (i in ramune.getCameraManager().getDefaultCamera())
+				console.debug(i);
 		}
 	}
 }();

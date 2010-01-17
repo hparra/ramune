@@ -538,6 +538,13 @@ University of California, Irvine
 	        	}
 	        }
 	    }
+	    
+	    /**
+	    * lpc: Local Procedure Call
+	    */
+	    public function lpc(function_name,arguments:Array):void {
+		    	apply(function_name, arguments);
+	    }
 	]]>
 	</mx:Script>
 	<ramune:RamuneUI id="ui" width="100%" height="100%"/>

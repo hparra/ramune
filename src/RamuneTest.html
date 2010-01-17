@@ -34,11 +34,19 @@ University of California, Irvine
 		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/jquery/jquery-1.3.2.js"></script>
 		<script type="application/javascript" src="Ramune.js"></script>
 		<script type="application/javascript">
+			var camera;
+		
 			placeCall = function() {
 				v = prompt("Adobe Stratus farID: ");
 				if (v !== null)
 					Ramune.placeCall("?", v);
 			}
+			listCameras = function() {
+				cams = Ramune.getCameras();
+				for (i in cams)
+					console.debug(cam[i].name);
+			}
+			
 			$(document).ready(function() {
 				// FIXME: redesign
 				Ramune.addEventListener(Ramune.INITIALIZED, function() {
@@ -58,9 +66,12 @@ University of California, Irvine
 
 					console.debug("Ramune.INITIALIZED caught");
 					Ramune.resize(640, 480);
+					
+					
+					camera = Ramune.getCameraManager().getDefaultCamera();
+					$("#currentCameraName").text(camera.getName());
 				});
 				Ramune.initialize();
-
 			});	
 		</script>
 	</head>
@@ -76,19 +87,61 @@ University of California, Irvine
 			<li><a onclick="Ramune.cancelCall()" href="#">Cancel Call</a></li>
 			<li><a onclick="Ramune.ignoreCall()" href="#">Ignore Call</a></li>
 			<li><a onclick="Ramune.endCall()" href="#">End Call</a></li>
-			<li><a onclick="Ramune.resize(320, 240)" href="#">Ramune.resize(320, 240)</a></li>
 		</ul>
-		<div id="camera">
-			<p>Current Camera Name: <span id="currentCameraName"></span>	</p>
-			<form id="local_camera">
+		<h3>Debugging</h3>
+		<ul>
+			<li><a onclick="Ramune.dumpRamune()" href="#">Dump Ramune</a></li>
+			<li><a onclick="Ramune.dumpRamuneBridge()" href="#">Dump FABridgeObject (Ramune)</a></li>
+			<li><a onclick="Ramune.dumpCameraManager()" href="#">Dump Ramune.CameraManager</a></li>
+			<li><a onclick="Ramune.dumpDefaultCamera()" href="#">Dump Ramune.CameraManager.DefaultCamera</a></li>
+		</ul>
+		<div>
+			<h3>Raw Access</h3>
+			
+			<form id="general_ramune">
 				<fieldset>
-					<!--legend>Local Camera</legend-->
+					<legend>Ramune</legend>
 					<dl>
-						<!-- Local Quality -->
-						<dt><label for="local_quality">Video Quality:</label></dt>
+						<!-- Ramune.resize(width, height) -->
+						<dt><label>Ramune.resize(width, height)</label></dt>
 						<dd>
+							<input type="text" id="ramune_width" name="ramune_width" value="640" />
+							<input type="text" id="ramune_height" name="ramune_height" value="480" />
+							<button type="button" id="local_quality_button" name="ramune_resize_button" onclick="Ramune.resize(document.forms['general_ramune']['ramune_width'].value, document.forms['general_ramune']['ramune_height'].value)">Change</button>
+						</dd>
+						<!-- Ramune.hide() -->
+						<dt><label>Ramune.hide()</label></dt>
+						<dd>
+							<button type="button" id="local_quality_button" name="ramune_hide_button" onclick="Ramune.hide()">Change</button>
+						</dd>
+						<!-- Ramune.show() -->
+						<dt><label>Ramune.show()</label></dt>
+						<dd>
+							<button type="button" id="local_quality_button" name="ramune_show_button" onclick="Ramune.show()">Change</button>
+						</dd>
+					</d>
+				</fieldset>
+			</form>
+			
+			<form id="current_camera" name="current_camera">
+				<fieldset>
+					<p>Current Camera Name: <span id="currentCameraName"></span></p>
+					<legend>Camera</legend>
+					<dl>
+						<!-- camera.setQuality(bandwidth, quality) -->
+						<dt><label>camera.setQuality(bandwidth, quality)</label></dt>
+						<dd>
+							<input type="text" id="local_bandwidth" name="local_bandwidth" value="0" />
 							<input type="text" id="local_quality" name="local_quality" value="90" />
-							<button type="button" id="local_quality_button" name="local_quality_button" onclick="Ramune.lpc('setQuality', document.forms['local_camera']['local_quality'].value)">Change</button>
+							<button type="button" id="local_quality_button" name="local_quality_button" onclick="camera.setQuality(document.forms['current_camera']['local_bandwidth'].value, document.forms['current_camera']['local_quality'].value)">Change</button>
+						</dd>
+						<!-- camera.setMode(width, height, fps) -->
+						<dt><label>camera.setMode(width, height, fps)</label></dt>
+						<dd>
+							<input type="text" id="camera_width" name="camera_width" value="640" />
+							<input type="text" id="camera_height" name="camera_height" value="480" />
+							<input type="text" id="camera_fps" name="camera_fps" value="25" />
+							<button type="button" id="camera_fd" name="local_quality_button" onclick="camera.setMode(document.forms['current_camera']['camera_width'].value, document.forms['current_camera']['camera_height'].value, document.forms['current_camera']['camera_fps'].value)">Change</button>
 						</dd>
 					</dl>
 				</fieldset>
