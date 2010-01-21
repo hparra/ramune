@@ -4,9 +4,9 @@ include WEBrick
 
 server = HTTPServer.new(
   :Port            => 4000,
-  :DocumentRoot    => Dir::pwd + "/src"
+  :DocumentRoot    => Dir::pwd + "/bin"
 )
-server.mount("/bin", HTTPServlet::FileHandler, Dir::pwd + "/bin-debug")
+server.mount("/bin", HTTPServlet::FileHandler, Dir::pwd + "/bin")
 
 trap("INT"){ server.shutdown }
 server.start

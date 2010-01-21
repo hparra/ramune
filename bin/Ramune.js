@@ -53,11 +53,25 @@ var Ramune = function() {
 		NETCONNECTION_SUCCESS: "RAMUNE_NETCONNECTION_SUCCESS_EVENT",
 	};
 	
-	// FIXME: Should find out whether it worked or not
+	/**
+	 * Embeds Ramune and initializize FABridge
+	 */
 	var initialize = function(options) {
 		
+		/* Check for SWFObject JS */
 		if (typeof swfobject === "undefined") {
 			throw new Error("SWFObjectNotFound", "\'swfobject\' undefined. Initialization aborting.");
+		}
+		else {
+			console.log("Found SWFObject");
+		}
+		
+		/* Check for FABridge JS */
+		if (typeof FABridge === "undefined") {
+			throw new Error("FABridgeNotFound", "\'FABridge\' undefined. Initialization aborting.");
+		}
+		else {
+			console.log("Found FABridge");
 		}
 		
 		// TODO: deprecate
@@ -65,12 +79,7 @@ var Ramune = function() {
 			throw new Error("jQueryNotFound", "\'jquery\' undefined. Initialization aborting.");
 		}
 		
-		// TODO: deprecate
-		if (typeof FABridge === "undefined") {
-			throw new Error("FABridgeNotFound", "\'FABridge\' undefined. Initialization aborting.");
-		}
-		
-		/* DOM */
+		/* Create DIV container if not already present */
 		div = document.getElementById('RamuneBox');
 		if (div === null) {
 			div = document.createElement('div');
@@ -80,7 +89,7 @@ var Ramune = function() {
 		}
 		
 		/* SWF */
-		path = "Ramune.swf";
+		//path = "Ramune.swf";
 		flashvars = {
 			bridgeName: "RamuneSWF",
 			serverURI: "rtmfp://stratus.adobe.com/957c10737240a05c0143ce7f-b33403f49938" // user should provide?
@@ -95,9 +104,8 @@ var Ramune = function() {
 		embed_callback = function() {
 			console.debug("[RamuneJS] SWFObject embedded");
 		};
-		swfobject.embedSWF(path, "RamuneBox", "0", "0", "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
+		swfobject.embedSWF(options.path, "RamuneBox", options.width, options.height, "10.0.0", "expressInstall.swf", flashvars, params, attributes, embed_callback);
 
-		// TODO: deprecate
 		/* FABridge */
 		FABridge.addInitializationCallback("RamuneSWF", function() {
 			ramune = FABridge.RamuneSWF.root();
@@ -115,17 +123,17 @@ var Ramune = function() {
 		events: events,
 		//
 		version: 1,
-
-		// FIXME: Redesign
+		
 		/**
 		 * Initializes Ramune
 		 */
-		initialize: function() {
+		initialize: function(options) {
+			
 			if (isInitialized) {
 				console.log("Already initialized");
 			}
 			else {
-				initialize();
+				initialize(options);
 			}
 		},
 		
@@ -216,6 +224,9 @@ var Ramune = function() {
 		},
 		getCameraManager: function() {
 			return ramune.getCameraManager();
+		},
+		getUI: function() {
+			return ramune.getUi();
 		},
 		
 		// DEBUGGING

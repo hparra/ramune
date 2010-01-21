@@ -58,7 +58,17 @@ package {
 		
 		// TODO: Split this in half?
 		// returns PNG Base64
+		// DEPRECATE
 		public function captureVideo(index:uint):String {
+			var bitmapData:BitmapData = new BitmapData(videos[index].width, videos[index].height);
+			bitmapData.draw(videos[index]);
+			var byteArray:ByteArray = PNGEncoder.encode(bitmapData);
+			var base64:String = Base64.encodeByteArray(byteArray);
+			return base64;
+		}
+		
+		//
+		public function captureImage(index:uint):String {
 			var bitmapData:BitmapData = new BitmapData(videos[index].width, videos[index].height);
 			bitmapData.draw(videos[index]);
 			var byteArray:ByteArray = PNGEncoder.encode(bitmapData);

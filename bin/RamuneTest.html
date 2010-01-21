@@ -30,7 +30,9 @@ University of California, Irvine
 		
 		<!-- Third-party (vendor) -->
 		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/swfobject/2.2/swfobject.js"></script>
+		<!--script type="application/javascript" src="swfobject.js"></script-->
 		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/swfobject/fabridge/FABridge.js"></script>
+		<!--script type="application/javascript" src="FABridge.js"></script-->
 		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/jquery/jquery-1.3.2.js"></script>
 		<script type="application/javascript" src="Ramune.js"></script>
 		<script type="application/javascript">
@@ -50,6 +52,7 @@ University of California, Irvine
 			$(document).ready(function() {
 				// FIXME: redesign
 				Ramune.addEventListener(Ramune.INITIALIZED, function() {
+					console.debug("Ramune.INITIALIZED caught");
 					
 					$("#RamuneBox").bind(Ramune.events.RESIZE, function(e) {
 						$("#RamuneBox").css("width", e.width);
@@ -64,14 +67,14 @@ University of California, Irvine
 						$("#near_id").html(e.nearID);
 					});
 
-					console.debug("Ramune.INITIALIZED caught");
+					
 					Ramune.resize(640, 480);
 					
 					
 					camera = Ramune.getCameraManager().getDefaultCamera();
 					$("#currentCameraName").text(camera.getName());
 				});
-				Ramune.initialize();
+				
 			});	
 		</script>
 	</head>
@@ -79,6 +82,10 @@ University of California, Irvine
 		<div id="RamuneBox"></div>
 		<h3>My nearID: <span id="near_id"></span></h3>
 		<h3>Current State: <span id="current_state"></span></h3>
+		<h3>Initialization</h3>
+		<ul>
+			<li><a onclick="Ramune.initialize()" href="#">Initialize Ramune</a></li>
+		</ul>
 		<h3>Commands</h3>
 		<ul>
 			<li><a onclick="Ramune.connect()" href="#">Connect</a></li>

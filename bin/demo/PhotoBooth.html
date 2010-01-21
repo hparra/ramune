@@ -1,0 +1,73 @@
+<!--
+
+PhotoBooth.html
+
+Copyright © 2010 The Regents of the University of California
+All Rights Reserved
+
+Created by Hector Guillermo Parra, hector@hectorparra.com
+California Institute for Telecommunications and Information Technology
+University of California, Irvine
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Ramune Test</title>
+		<style>
+			body {
+				color: white;
+				background-color: black;
+			}
+		
+			#RamuneBox {
+				border: 1px solid #FFFFFF;
+			}
+			
+		</style>
+		
+		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/swfobject/2.2/swfobject.js"></script>
+		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/swfobject/fabridge/FABridge.js"></script>
+		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/jquery/jquery-1.3.2.js"></script>
+		<script type="application/javascript" src="../Ramune.js"></script>
+		
+		<script type="application/javascript">
+			
+			var video_index;
+			
+			function captureImage() {
+				base64_string = Ramune.getUI().captureImage(video_index);
+				img_src = "data:image/png;base64," + base64_string;
+				$("#captured_image").attr('src', img_src);
+			}
+				
+			$(document).ready(function() {
+				
+				// Execute after Ramune is initialized
+				Ramune.addEventListener(Ramune.INITIALIZED, function() {
+					console.debug("Ramune.INITIALIZED caught");
+
+					video_index = Ramune.getUI().newVideo(640, 480, 0, 0, 0);
+					camera = Ramune.getCameraManager().getDefaultCamera();
+					Ramune.getUI().attachCameraToVideo(camera, video_index);
+				});
+				
+				// Initialize Ramune
+				Ramune.initialize({
+					path: "../Ramune.swf",
+					width: "640",
+					height: "480"
+				});
+				
+			});	
+		</script>
+	</head>
+	<body>
+		<div id="RamuneBox"></div>
+		<div>
+			<img id="captured_image" />
+		</div>
+		<a onclick="captureImage()" href="#">Take Snapshot</a>
+	</body>
+</html>

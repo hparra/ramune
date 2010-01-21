@@ -14,6 +14,15 @@ Ramune requires certain JavaScript libraries. See Dependencies.
 
 Ramune has been thoroughly tested on Firefox 3.0+. It was also been tested on Safari and Chrome. It does not yet work with Internet Explorer.
 
+=== Building Dependencies
+
+* Java
+* Ant
+* Flex 3.5 SDK
+* as3corelib:
+* as3base64: http://github.com/spjwebster/as3base64
+
+sudo cp ~/flex_sdk_3/ant/lib/flexTasks.jar /usr/share/ant/lib/
 
 === Dependencies
 

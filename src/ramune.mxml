@@ -14,8 +14,8 @@ University of California, Irvine
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:ramune="*"
 	layout="absolute"
-	width="0"
-	height="0"
+	width="100%"
+	height="100%"
 	preinitialize="onPreinitialize()"
 	initialize="onInitialize()"
 	creationComplete="onCreationComplete()"
@@ -85,6 +85,7 @@ University of California, Irvine
 		private function onInitialize():void {		
 		}
 		private function onCreationComplete():void {
+			Security.allowDomain("*");
 			this.doubleClickEnabled = true;
 		 	this.verticalScrollPolicy = "off";
 			this.horizontalScrollPolicy = "off";
@@ -99,24 +100,17 @@ University of California, Irvine
 				debug("ExternalInterface not available!");
 				return;
 			}
-
-			// TODO: These have a tendency not to work!
-			//ExternalInterface.addCallback("placeCall", placeCall);
-			//ExternalInterface.addCallback("acceptCall", acceptCall);
-			//ExternalInterface.addCallback("endCall", endCall); 
 			
 			cameraManager = new CameraManager();
-			//initializeCams();
 			micManager = new MicrophoneManager();
-			//initializeMics();
-			//initializeSettings(); // TODO: Finish
-			
-			//this.setSize(0, 0);
-			
-			//ExternalInterface.call(id + "")
+
+			//this.setSize(params[width], params[height]);
+
 			debug(cameraManager.getCameraAsJSON(0));
 			debug("ApplicationComplete");
         }
+
+
         private function changeCallState(state:String):void {
         	switch (state) {
         		case CALL_NOT_READY:
@@ -466,6 +460,9 @@ University of California, Irvine
 
 		}*/
 
+		/*
+		 * Saves the current size of Ramune and resizes
+		 */
 		public function setSize(width:Number, height:Number):void {	
 			previousWidth = this.width;
 			previousHeight = this.height;
@@ -475,6 +472,7 @@ University of California, Irvine
 			// TODO: Should we call a function or do event creation directly?
 			ExternalInterface.call("Ramune.triggerResizeEvent", this.width, this.height);
 		}
+		
 		public function hide():void {
 			// detach videos
 			this.setSize(0, 0);
@@ -542,8 +540,8 @@ University of California, Irvine
 	    /**
 	    * lpc: Local Procedure Call
 	    */
-	    public function lpc(function_name,arguments:Array):void {
-		    	apply(function_name, arguments);
+	    public function lpc(function_name:String, arguments:Array):void {
+		    //	apply(function_name, arguments);
 	    }
 	]]>
 	</mx:Script>
