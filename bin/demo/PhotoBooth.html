@@ -26,13 +26,12 @@ University of California, Irvine
 			}
 			
 		</style>
-		
-		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/swfobject/2.2/swfobject.js"></script>
-		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/swfobject/fabridge/FABridge.js"></script>
-		<script type="application/javascript" src="http://marco.calit2.uci.edu/lib/jquery/jquery-1.3.2.js"></script>
+		<script src="http://www.google.com/jsapi"></script>
+		<script type="application/javascript" src="../FABridge.js"></script>
 		<script type="application/javascript" src="../Ramune.js"></script>
-		
 		<script type="application/javascript">
+			google.load("jquery", "1.4.1");
+			google.load("swfobject", "2.2");
 			
 			var video_index;
 			
@@ -42,7 +41,7 @@ University of California, Irvine
 				$("#captured_image").attr('src', img_src);
 			}
 				
-			$(document).ready(function() {
+			google.setOnLoadCallback(function() {
 				
 				// Execute after Ramune is initialized
 				Ramune.addEventListener(Ramune.INITIALIZED, function() {
