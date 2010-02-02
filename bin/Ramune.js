@@ -222,9 +222,17 @@ var Ramune = function() {
 			for (var i = 1; i < arguments.length; ++i)
 				console.debug(arguments[i]);
 		},
+		
+		/**
+		* Returns the Camera Manager
+		*/
 		getCameraManager: function() {
 			return ramune.getCameraManager();
 		},
+		
+		/**
+		* Returns the User Interface Manager
+		*/
 		getUI: function() {
 			return ramune.getUi();
 		},
