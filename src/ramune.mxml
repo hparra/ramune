@@ -49,7 +49,7 @@ University of California, Irvine
 
 		public var cameraManager:CameraManager;		
 		public var micManager:MicrophoneManager;
-
+		public var netManager:NetManager;
 
 		private var remoteName:String;
 		
@@ -103,6 +103,7 @@ University of California, Irvine
 			
 			cameraManager = new CameraManager();
 			micManager = new MicrophoneManager();
+			netManager = new NetManager();
 
 			//this.setSize(params[width], params[height]);
 

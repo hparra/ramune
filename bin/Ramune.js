@@ -237,6 +237,10 @@ var Ramune = function() {
 			return ramune.getUi();
 		},
 		
+		getNetManager: function() {
+			return ramune.getNetManager();
+		},
+		
 		// DEBUGGING
 		dumpRamune: function() {
 			console.debug("Dumping Ramune object ...");
