@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Ramune README</title>
+		<style>
+			body {
+				padding: 20%;
+				color: black;
+				background-color: #DDDDDD;
+			}
+		
+			.section {
+				margin: 20px;
+				padding: 20px;
+				background-color: white;
+				border: 1px solid #AAAAAA;
+			}
+			
+			/* Code */
+			pre {
+				border-left: 4px solid #AAAAAA;
+				padding-left: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Ramune</h1>
+		<p>Hector G. Parra hector@hectorparra.com</p>
+		<p>Ramune is an Adobe Flash 10 application and accompanying JavaScript library specializing in Microphone/Camera acquisition and Audio/Video communication and presentation. It is meant to interface entirely through JavaScript and does not contain chrome.</p>
+		
+		<!-- Requirements -->
+		<div class="section">
+			<h2>Requirements</h2>
+			<p>Ramune requires Adobe Flash 10: http://www.adobe.com/products/flashplayer/</p>
+			<p>Ramune requires certain JavaScript libraries. See Dependencies.</p>
+			<p>Ramune has been thoroughly tested on Firefox 3.0+. It was also been tested on Safari and Chrome. It does not yet work with Internet Explorer.</p>
+		</div>
+
+		<!-- Building Dependencies -->
+		<div class="section">
+		<h2>Building Dependencies</h2>
+		<p>In order to build Ramune the following tools and libraries are needed:</p>
+		<ul>
+			<li>Apache Ant</li>
+			<li>Adobe Flex 3.5 SDK</li>
+			<li><a href="#">as3corelib</a></li>
+			<li><a href="http://github.com/spjwebster/as3base64">as3base64</a></li> 
+		</ul>
+		<p>Flex has a library to extend Ant. Under POSIX systems you should copy this library to the location of Ant's. For example, under Mac OS X:</p>
+		<p>cp FLEX_SDK_LOCATION/flex_sdk_3/ant/lib/flexTasks.jar /usr/share/ant/lib/</p>
+		</div>
+
+		<!-- Execution Dependencies -->
+		<div class="section">
+		<h2>Execution Dependencies</h2>
+		<p>Ramune currently depends on three libraries, one of which we wish to deprecate in the future. Ramune.js actually checks for these libraries and throws an exception if one of them was not found. It does not yet support dependency injection.</p>
+		<ul>
+			<li><a href="http://livedocs.adobe.com/flex/3/html/help.html?content=ajaxbridge_1.html">FABridge</a> (included)</li>
+			<li><a href="http://code.google.com/p/swfobject/">SWFObject</a> (You may use Google's CDN)</li>
+			<li><a href="http://jquery.com/">jQuery</a></li>
+		</ul>
+		<p>The Telios group at Calit2 maintains a mirror of tested versions of these dependencies:</p>
+		<ul>
+			<li>SWFObject: http://marco.calit2.uci.edu/lib/swfobject/2.2/swfobject.js</li>
+			<li>FABridge: http://marco.calit2.uci.edu/lib/swfobject/fabridge/FABridge.js</li>
+			<li>jQuery: http://marco.calit2.uci.edu/lib/jquery/jquery-1.3.2.js</li>
+		</ul>
+		</div>
+
+		<!-- Installation -->
+		<div class="section">
+		<h2>Installation</h2>
+		<p>There are three ways to acquire Martinelli by two code sources which require building and the Nightly Mirror where you can download the latest Ramune.js and Ramune.swf:</p>
+
+		<ul>
+			<li>Compressed Released: http://telios.calit2.uci.edu/framework.html</li>
+			<li>Github Repository: https://github.com/hparra/ramune</li>
+			<li>Nightly Mirror: http://marco.calit2.uci.edu/ramune/</li>
+		</ul>
+
+		<p>IMPORTANT: Only the Nightly Mirror has compiled Ramune</p>
+		</div>
+
+		<!-- Usage -->
+		<div class="section">
+		<h2>Usage</h2>
+		<p>Using Ramune can be difficult since it does so much! Ramune outputs plenty of debug information, so we encourage you to use Firefox with the Firebug plug-in: http://getfirebug.com/</p>
+		</div>
+
+		<div class="section">
+			<h2>Dependency Origin</h2>
+			<p>Adobe Flash Player has a standard Same-Origin Policy. Your HTML file and Ramune.swf should originate from the same domain or else the ability to interface with Ramune using JavaScript will be denied. Ramune.js assumes that Ramune.swf is in this directory as itself.</p>
+		</div>
+
+		<div class="section">
+		<h2>Load Dependencies</h2>
+		<p>Assuming the following are in your local directory, load the SWFObject, FABridge, jQuery, and Ramune JavaScripts using the %3Cscript%3E HTML tag:</p>
+		<pre>
+&lt;script type=&quot;text/javascript&quot; src=&quot;swfobject.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;FABridge.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery-1.3.2.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;Ramune.js&quot;&gt;&lt;/script&gt;
+		</pre>
+		</div>
+
+		<div class="section">
+		<h2>Load Ramune</h2>
+		<p>You can specify where Ramune will live by using the following HTML tag:</p>
+		<code>&lt;div id=&quot;RamuneBox&quot;&gt;&lt;/div&gt;</code>
+	
+		<p>If Ramune.js does not find this tag, it will create it for you and append it to the very end of your HTML document.</p>
+		<p>IMPORTANT: SWFObject will actually replace this tag with &lt;object id=&quot;RamuneBox&quot;&gt;&lt;/object&gt;.</p>
+		<p>You may want to add a callback. A callback is a function that executes when an event associated with a function has fired. In this case, you can specify a function to execute after Ramune has been initialized:</p>
+		<pre>
+		Ramune.addEventListener(Ramune.INITIALIZED, function() {
+			// your code
+		});
+		</pre>
+		</div>
+
+		<p>Initialize Ramune:</p>
+		<pre>
+		Ramune.initialize();
+		</pre>
+
+		<p>Ramune is 0 x 0 pixels in size by default. You should resize it when appropriate:</p>
+		<pre>
+		Ramune.resize(640, 480);
+		</pre>
+	
+		<p>IMPORTANT: Don't forget to resize its containing OBJECT tag as well</p>
+
+		=== State Machine
+
+		Depending on your use, you may use one of Ramune's state machines. For example, if you were to use Ramune for RTMFP communication, the following states apply:
+
+		* CALL_NOT_READY
+		* CALL_READY
+		* CALL_CALLING
+		* CALL_RINGING
+		* CALL_ESTABLISHED
+		* CALL_FAILED
+
+		These states change by calling a function that is appropriate for that state e.g. Ramune.placeCall();
+
+		You can bind an STATE_CHANGE event listener to Ramune:
+
+			$("#Ramune").bind(Ramune.events.STATE_CHANGE, function(e) {
+				// your code
+			});
+
+		<!---->
+		<h2>Learning by Example</h2>
+		<p>RamuneTest.html aims to offer an easy interface to test all of Ramune's features. It is constantly evolving and you should always inspect it after every new release.</p>
+
+		<!---->
+		<h2>Future of Ramune</h2>
+		<p>Unfortunately Ramune is a mixture of careful software engineering and hacked monkey patches. Future releases may break the current interface, so please back up your work and your current copy of Ramune before upgraded to newer versions.</p>
+		<p>Currently, we depend on jQuery for future Internet Explorer compatibility since their DOM Event Model does not follow W3C standards, but there are known problems with FABridge, so we may remove jQuery altogether. We still recommend it for you own program which use Ramune.</p>
+		<p>FABridge is a powerful JavaScript library that exposes much of ActionScript seamlessly, but Internet Explorer has difficulty with some of its finer features.</p>
+		
+	</body>
+</html>
