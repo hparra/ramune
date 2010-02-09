@@ -21,65 +21,50 @@
 			google.load("swfobject", "2.2");
 			
 			// VARs
-			var SERVER_URI = "rtmp://claude.calit2.uci.edu/SharedUsers";
-			var SHARED_USERS_PASSWORD = "SHADOW";
+			var SERVER_URI = "rtmp://claude.calit2.uci.edu/vod/sample.flv";
+			var STREAM = "";
 			var fms;
-			var username;
-			var usersObject;
+			
+			netStatusListener = function(event) {
+				console.debug(event.getInfo().code);
+				switch (event.getInfo().code) {
+					case "NetConnection.Connect.Success" :
+						console.debug("Connected to FMS: " + fms.getUri());
+						break;
+					case "NetConnection.Connect.Closed":
+						break;
+					case "NetConnection.Connect.Failed":
+						break;
+				}
+			}
 			
 			//
 			google.setOnLoadCallback(function() {
 				
 				console.debug("Window loaded");
-				username = window.prompt("Username?");
-				document.getElementById("username").innerHTML = username;
 				
 				// Execute after Ramune is initialized
 				Ramune.addEventListener(Ramune.INITIALIZED, function() {
 					console.debug("Ramune.INITIALIZED caught");
 					
 					fms = Ramune.getNetManager().createNetConnection();
+					fms.addEventListener("netStatus", netStatusListener);
+					fms.connect(null);
 					
-					//
-					fms.addEventListener("netStatus", function(event) {
-						console.debug(event.getInfo().code);
-
-						switch (event.getInfo().code) {
-							case "NetConnection.Connect.Success" :
-								console.debug("Connected to FMS: " + fms.getUri());
-
-								usersObject = Ramune.getNetManager().getRemoteSharedObject("clients", fms.getUri());
-								usersObject.addEventListener("sync", function(sync_event) {
-									console.debug("Users Synced");
-
-									users = usersObject.getData();
-									current_users = document.getElementById("current_users");
-									current_users.innerHTML = "";
-
-									for (n in users) {
-										li = document.createElement('li');
-										li.innerHTML = n;
-										current_users.appendChild(li); // equal to 'users[i].username'
-									}
-								});
-								usersObject.connect(fms);
-								break;
-							case "NetConnection.Connect.Closed":
-								break;
-							case "NetConnection.Connect.Failed":
-								break;
-						}
-					});
-
-					fms.connect(SERVER_URI, username, SHARED_USERS_PASSWORD);
+					ns = Ramune.getNetManager().createNetStream(fms);
+					ns.addEventListener("netStatus", netStatusListener);
 					
+					video_index = Ramune.getUI().newVideo(640, 480, 0, 0, 0);
+					Ramune.getUI().attachNetStreamToVideo(ns, video_index);
+					
+					ns.play(SERVER_URI);
 				});
 				
 				// Initialize Ramune
 				Ramune.initialize({
 					path: "../Ramune.swf",
-					width: "0",
-					height: "0"
+					width: "640",
+					height: "480"
 				});	
 				
 			});	

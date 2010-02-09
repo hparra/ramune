@@ -48,6 +48,21 @@
 							case "NetConnection.Connect.Success" :
 								console.debug("Connected to FMS: " + fms.getUri());
 
+								usersObject = Ramune.getNetManager().getRemoteSharedObject("clients", fms.getUri());
+								usersObject.addEventListener("sync", function(sync_event) {
+									console.debug("Users Synced");
+
+									users = usersObject.getData();
+									current_users = document.getElementById("current_users");
+									current_users.innerHTML = "";
+
+									for (n in users) {
+										li = document.createElement('li');
+										li.innerHTML = n;
+										current_users.appendChild(li); // equal to 'users[i].username'
+									}
+								});
+								usersObject.connect(fms);
 								break;
 							case "NetConnection.Connect.Closed":
 								break;
@@ -63,8 +78,8 @@
 				// Initialize Ramune
 				Ramune.initialize({
 					path: "../Ramune.swf",
-					width: "640",
-					height: "480"
+					width: "0",
+					height: "0"
 				});	
 				
 			});	
@@ -72,7 +87,12 @@
 	</head>
 	<body>
 		<div id="RamuneBox"></div>
-		<h1>Ramune Video Stream Demo</h1>
-		<p>Video Streaming using NetStream. See <a href="http://www.adobe.com/livedocs/flash/9.0/ActionScriptLangRefV3/flash/net/NetStream.html">NetStream</a>.</p>
+		<h1>Ramune Remote SharedObject Demo</h1>
+		<p>The SharedObject class is used to read and store limited amounts of data on a user's computer or on a server. Shared objects offer real-time data sharing between multiple client SWF files and objects that are persistent on the local computer or remote server. See <a href="http://www.adobe.com/livedocs/flash/9.0/ActionScriptLangRefV3/flash/net/SharedObject.html">SharedObject</a>.</p>
+		<p>Have another instance (browser/computer) connect to this demo!</p>
+		<p>Your Username: <span id="username"></span></p>
+		<h2>Current Users</h2>
+		<ul id="current_users">
+		</ul>
 	</body>
 </html>
