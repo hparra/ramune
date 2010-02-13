@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Ramune Camera Resize Demo</title>
+		<style>
+			body {
+				color: white;
+				background-color: black;
+			}
+		
+			#RamuneBox {
+				border: 1px solid #FFFFFF;
+			}
+			
+		</style>
+		<script src="http://www.google.com/jsapi"></script>
+		<script type="application/javascript" src="../FABridge.js"></script>
+		<script type="application/javascript" src="../Ramune.js"></script>
+		<script type="application/javascript">
+			google.load("jquery", "1.4.1");
+			google.load("swfobject", "2.2");
+			
+			var video_index;
+			var camera;
+			
+			var changeCameraMode = function(res) {
+				dim = res.split(',');
+				console.debug(dim[0] + " x " + dim[1]);
+				
+				// Resize RamuneBox
+				$('#RamuneBox').css('width', dim[0]);
+				$('#RamuneBox').css('height', dim[1]);
+				
+				// Resize Ramune canvas
+				Ramune.resize(dim[0], dim[1]);
+
+				// Resize Video (size)
+				Ramune.getUI().resizeVideo(video_index, dim[0], dim[1]);
+
+				// Resize camera (resolution)
+				camera.setMode(dim[0], dim[1], 15);
+			}
+			
+			google.setOnLoadCallback(function() {
+				
+				// Execute after Ramune is initialized
+				Ramune.addEventListener(Ramune.INITIALIZED, function() {
+					console.debug("Ramune.INITIALIZED caught");
+
+					video_index = Ramune.getUI().newVideo(640, 480, 0, 0, 0);
+					camera = Ramune.getCameraManager().getDefaultCamera();
+					Ramune.getUI().attachCameraToVideo(camera, video_index);
+				});
+				
+				// Initialize Ramune
+				Ramune.initialize({
+					path: "../Ramune.swf",
+					width: "640",
+					height: "480"
+				});
+				
+			});	
+		</script>
+	</head>
+	<body>
+		<div id="RamuneBox"></div>
+		<form id="local_camera">
+			<fieldset>
+				<legend>Local Camera</legend>
+				<dl>
+					<dt><label for="local_mode">Local Mode:</label></dt>
+					<dd>
+						<select id="local_mode" name="local_mode" onchange="changeCameraMode(document.forms['local_camera']['local_mode'].value)">
+							<option value="160,120">(4:3) 160 x 120</option>
+							<option value="320,240">(4:3) 320 x 240</option>
+							<option value="640,480">(4:3) SD/NTSC (640 x 480)</option>
+							<option value="800,600">(4:3) 800 x 600</option>
+							<option value="960,720">(4:3) 960 x 720</option>
+							<option value="1024,768">(4:3) 1024 x 768</option>
+							<option value="1280,1024">(4:3) 1280 x 1024</option>
+							<option value="1600,1200">(4:3) 1600 x 1200</option>
+							<option value="320,180">(16:9) 320 x 180</option>
+							<option value="480,270">(16:9) 480 x 270</option>
+							<option value="640,360">(16:9) SD/NTSC (640 x 360)</option>
+							<option value="720,480">(16:9) DV/NTSC (720 x 480)</option>
+							<option value="720,480">(16:9) DVD (720 x 480)</option>
+							<option value="1280,720">(16:9) HD 720p (1280 x 720)</option>
+							<option value="1920,1080">(16:9) HD 1080p (1920 x 1080) NOT SUPPORTED</option>
+						</select>
+					</dd>
+				</dl>
+			</fieldset>
+		</form>
+	</body>
+</html>
